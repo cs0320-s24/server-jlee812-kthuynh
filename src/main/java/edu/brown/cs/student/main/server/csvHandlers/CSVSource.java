@@ -22,8 +22,7 @@ public class CSVSource {
   public void loadData(String fileName, boolean hasHeader)
       throws IOException, FactoryFailureException {
     FileReader reader = new FileReader(fileName);
-    CSVParser<List<String>> parser =
-        new CSVParser<>(reader, new StringListFromRow(), hasHeader);
+    CSVParser<List<String>> parser = new CSVParser<>(reader, new StringListFromRow(), hasHeader);
     this.header = parser.getHeader();
     this.data = parser.parseCSV();
     this.searcher = new CSVSearcher(this.header, this.data);
@@ -38,7 +37,7 @@ public class CSVSource {
     if (this.isLoaded) {
       return this.searcher.search(value, columnValue);
     } else {
-      //throw error
+      // throw error
     }
 
     return null;

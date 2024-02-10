@@ -2,8 +2,8 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import edu.brown.cs.student.main.server.csvHandlers.CSVSource;
 import edu.brown.cs.student.main.server.csvHandlers.CSVLoadHandler;
+import edu.brown.cs.student.main.server.csvHandlers.CSVSource;
 import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
 import spark.Spark;
 

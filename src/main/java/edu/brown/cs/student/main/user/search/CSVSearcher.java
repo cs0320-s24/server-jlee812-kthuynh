@@ -1,6 +1,5 @@
 package edu.brown.cs.student.main.user.search;
 
-import edu.brown.cs.student.main.parser.CSVParser;
 import edu.brown.cs.student.main.parser.FactoryFailureException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,13 +12,15 @@ public class CSVSearcher {
 
   /**
    * The constructor for the CSV Searcher
+   *
    * @param header
    * @param data
    * @throws IOException Throws an IOException if something goes wrong reading the file.
-   * @throws FactoryFailureException Throws a FactoryFailureException if there is trouble
-   * processing data
+   * @throws FactoryFailureException Throws a FactoryFailureException if there is trouble processing
+   *     data
    */
-  public CSVSearcher(List<String> header, List<List<String>> data) throws IOException, FactoryFailureException {
+  public CSVSearcher(List<String> header, List<List<String>> data)
+      throws IOException, FactoryFailureException {
     this.header = header;
     this.data = data;
   }
