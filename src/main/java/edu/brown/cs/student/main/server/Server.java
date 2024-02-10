@@ -2,10 +2,15 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.server.csvHandlers.CSVCreator;
+import edu.brown.cs.student.main.server.csvHandlers.CSVLoadHandler;
+import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
 import spark.Spark;
 
 public class Server {
   public static void main(String[] args) {
+    CSVCreator creator = new CSVCreator();
+
     int port = 3232;
     Spark.port(port);
 
@@ -18,6 +23,9 @@ public class Server {
     // Setting up the handler for the GET /order and /activity endpoints
     // Spark.get("order", new OrderHandler(menu));
     // Spark.get("activity", new ActivityHandler());
+    Spark.get("loadcsv", new CSVLoadHandler(creator));
+    Spark.get("viewcsv", new CSVViewHandler(creator));
+
     Spark.init();
     Spark.awaitInitialization();
 

@@ -10,7 +10,7 @@ public class CSVCreator {
   private Boolean isLoaded;
 
   public CSVCreator() {
-    //new searcher
+    // new searcher
   }
 
   public void isLoaded() {
@@ -29,12 +29,11 @@ public class CSVCreator {
     this.data = newData;
   }
 
-  public List<List<String>> getData(){
+  public List<List<String>> getData() {
     return this.data;
   }
 
   public void search() {
-    //this.searcher.search();
+    // this.searcher.search();
   }
-
 }
