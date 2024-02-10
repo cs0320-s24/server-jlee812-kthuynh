@@ -2,26 +2,26 @@ package edu.brown.cs.student.main.server.csvHandlers;
 
 import edu.brown.cs.student.main.server.datasource.CSVSource;
 import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
-import java.util.ArrayList;
 import java.util.List;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class CSVViewHandler implements Route {
+public class CSVSearchHandler implements Route {
+
   private CSVSource source;
 
-  public CSVViewHandler(CSVSource source) {
+  public CSVSearchHandler(CSVSource source) {
     this.source = source;
   }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    List<List<String>> responseMap = new ArrayList<>();
-    if (!this.source.getHeader().isEmpty()) {
-      responseMap.add(this.source.getHeader());
-    }
-    responseMap.addAll(this.source.getData());
+    String value = request.queryParams("value");
+    String column = request.queryParams("column");
+
+    List<List<String>> responseMap = this.source.search(value, column);
+
     return new DataSuccessResponse(responseMap).serialize();
   }
 }

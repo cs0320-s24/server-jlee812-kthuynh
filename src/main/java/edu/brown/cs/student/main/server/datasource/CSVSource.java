@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.server.csvHandlers;
+package edu.brown.cs.student.main.server.datasource;
 
 import edu.brown.cs.student.main.parser.CSVParser;
 import edu.brown.cs.student.main.parser.FactoryFailureException;
@@ -7,6 +7,7 @@ import edu.brown.cs.student.main.user.search.HeaderValueException;
 import edu.brown.cs.student.main.user.search.StringListFromRow;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CSVSource {
@@ -16,7 +17,7 @@ public class CSVSource {
   private Boolean isLoaded;
 
   public List<String> getHeader() {
-    return this.header;
+    return new ArrayList<>(this.header);
   }
 
   public void loadData(String fileName, boolean hasHeader)
@@ -30,7 +31,7 @@ public class CSVSource {
   }
 
   public List<List<String>> getData() {
-    return this.data;
+    return new ArrayList<>(this.data);
   }
 
   public List<List<String>> search(String value, String columnValue) throws HeaderValueException {

@@ -3,8 +3,9 @@ package edu.brown.cs.student.main.server;
 import static spark.Spark.after;
 
 import edu.brown.cs.student.main.server.csvHandlers.CSVLoadHandler;
-import edu.brown.cs.student.main.server.csvHandlers.CSVSource;
+import edu.brown.cs.student.main.server.csvHandlers.CSVSearchHandler;
 import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
+import edu.brown.cs.student.main.server.datasource.CSVSource;
 import spark.Spark;
 
 public class Server {
@@ -25,6 +26,7 @@ public class Server {
     // Spark.get("activity", new ActivityHandler());
     Spark.get("loadcsv", new CSVLoadHandler(creator));
     Spark.get("viewcsv", new CSVViewHandler(creator));
+    Spark.get("searchcsv", new CSVSearchHandler(creator));
 
     Spark.init();
     Spark.awaitInitialization();
