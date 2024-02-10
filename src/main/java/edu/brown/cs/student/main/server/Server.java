@@ -1,9 +1,7 @@
-package edu.brown.cs.student.main;
+package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import java.util.ArrayList;
-import java.util.List;
 import spark.Spark;
 
 public class Server {
@@ -18,8 +16,8 @@ public class Server {
         });
 
     // Setting up the handler for the GET /order and /activity endpoints
-    //Spark.get("order", new OrderHandler(menu));
-    //Spark.get("activity", new ActivityHandler());
+    // Spark.get("order", new OrderHandler(menu));
+    // Spark.get("activity", new ActivityHandler());
     Spark.init();
     Spark.awaitInitialization();
 
