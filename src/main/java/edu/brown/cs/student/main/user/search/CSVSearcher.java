@@ -13,16 +13,15 @@ public class CSVSearcher {
 
   /**
    * The constructor for the CSV Searcher
-   *
-   * @param parser The CSV Parser
+   * @param header
+   * @param data
    * @throws IOException Throws an IOException if something goes wrong reading the file.
-   * @throws FactoryFailureException Throws a FactoryFailureException if there is trouble processing
-   *     data
+   * @throws FactoryFailureException Throws a FactoryFailureException if there is trouble
+   * processing data
    */
-  public CSVSearcher(CSVParser<List<String>> parser) throws IOException, FactoryFailureException {
-    // Gets the CSV data
-    this.header = parser.getHeader();
-    this.data = parser.parseCSV();
+  public CSVSearcher(List<String> header, List<List<String>> data) throws IOException, FactoryFailureException {
+    this.header = header;
+    this.data = data;
   }
 
   /**

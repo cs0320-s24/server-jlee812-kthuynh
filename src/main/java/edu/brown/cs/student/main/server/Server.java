@@ -2,14 +2,14 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import edu.brown.cs.student.main.server.csvHandlers.CSVCreator;
+import edu.brown.cs.student.main.server.csvHandlers.CSVSource;
 import edu.brown.cs.student.main.server.csvHandlers.CSVLoadHandler;
 import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
 import spark.Spark;
 
 public class Server {
   public static void main(String[] args) {
-    CSVCreator creator = new CSVCreator();
+    CSVSource creator = new CSVSource();
 
     int port = 3232;
     Spark.port(port);

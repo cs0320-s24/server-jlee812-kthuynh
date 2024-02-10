@@ -11,17 +11,17 @@ import spark.Response;
 import spark.Route;
 
 public class CSVViewHandler implements Route {
-  private CSVCreator creator;
+  private CSVSource source;
 
-  public CSVViewHandler(CSVCreator creator) {
-    this.creator = creator;
+  public CSVViewHandler(CSVSource source) {
+    this.source = source;
   }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
     List<Map<String, String>> responseMap = new ArrayList<>();
-    List<List<String>> data = this.creator.getData();
-    List<String> header = this.creator.getHeader();
+    List<List<String>> data = this.source.getData();
+    List<String> header = this.source.getHeader();
 
     for (List<String> row : data) {
       Map<String, String> map = new HashMap<>();
