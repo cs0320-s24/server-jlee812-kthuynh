@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.user.search;
+package edu.brown.cs.student.main.csv.search;
 
 /** An exception for if a value is not found in the header. */
 public class HeaderValueException extends Exception {

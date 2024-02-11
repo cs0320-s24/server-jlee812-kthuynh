@@ -1,10 +1,10 @@
 package edu.brown.cs.student.main.server.datasource;
 
-import edu.brown.cs.student.main.parser.CSVParser;
-import edu.brown.cs.student.main.parser.FactoryFailureException;
-import edu.brown.cs.student.main.user.search.CSVSearcher;
-import edu.brown.cs.student.main.user.search.HeaderValueException;
-import edu.brown.cs.student.main.user.search.StringListFromRow;
+import edu.brown.cs.student.main.csv.parser.CSVParser;
+import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
+import edu.brown.cs.student.main.csv.search.CSVSearcher;
+import edu.brown.cs.student.main.csv.search.HeaderValueException;
+import edu.brown.cs.student.main.csv.search.StringListFromRow;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
