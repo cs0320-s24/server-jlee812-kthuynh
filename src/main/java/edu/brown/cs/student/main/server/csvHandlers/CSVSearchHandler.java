@@ -24,19 +24,18 @@ public class CSVSearchHandler implements Route {
   public Object handle(Request request, Response response) throws Exception {
     String value = request.queryParams("value");
     String column = request.queryParams("column");
-
-    if (value == null) {
-      response.status(200);
-      String errorType = "missing_parameter";
-      String errorMessage = "The endpoint searchcsv is missing required queries";
-      Map<String, String> details = new HashMap<>();
-      details.put("value", value);
-      details.put("column", column);
-      details.put("error_arg", "value");
-      return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
-    }
-
     try {
+      if (value == null) {
+        response.status(200);
+        String errorType = "missing_parameter";
+        String errorMessage = "The endpoint searchcsv is missing required queries";
+        Map<String, String> details = new HashMap<>();
+        details.put("value", value);
+        details.put("column", column);
+        details.put("error_arg", "value");
+        return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
+      }
+
       List<List<String>> responseMap = this.source.search(value, column);
       return new DataSuccessResponse(responseMap).serialize();
     } catch (HeaderValueException e) {
@@ -45,7 +44,8 @@ public class CSVSearchHandler implements Route {
       String errorMessage = e.getMessage();
       Map<String, String> details = new HashMap<>();
       details.put("column", column);
-      details.put("error_arg", "value");
+      details.put("error_arg", "column");
+      details.put("valid_header_values", this.source.getHeader().toString());
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     } catch (UnloadedCSVException e) {
       response.status(200);
