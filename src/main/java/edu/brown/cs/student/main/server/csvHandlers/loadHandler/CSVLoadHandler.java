@@ -25,7 +25,7 @@ public class CSVLoadHandler implements Route {
 
     // If there are missing parameters.
     if (hasHeader == null || fileName == null) {
-      response.status(400);
+      response.status(200);
       String errorType = "missing_parameter";
       String errorMessage = "The endpoint loadcsv is missing requires queries";
       Map<String, String> details = new HashMap<>();
