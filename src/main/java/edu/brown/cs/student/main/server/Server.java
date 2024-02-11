@@ -2,9 +2,9 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.server.csvHandlers.CSVSearchHandler;
 import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
 import edu.brown.cs.student.main.server.csvHandlers.loadHandler.CSVLoadHandler;
-import edu.brown.cs.student.main.server.csvHandlers.CSVSearchHandler;
 import edu.brown.cs.student.main.server.datasource.CSVSource;
 import spark.Spark;
 

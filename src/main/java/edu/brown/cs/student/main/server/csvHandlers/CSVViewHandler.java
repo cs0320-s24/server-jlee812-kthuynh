@@ -3,6 +3,7 @@ package edu.brown.cs.student.main.server.csvHandlers;
 import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.datasource.CSVSource;
 import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
+import edu.brown.cs.student.main.server.datasource.UnloadedCSVException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,21 +20,20 @@ public class CSVViewHandler implements Route {
   }
 
   @Override
-  public Object handle(Request request, Response response) throws Exception {
+  public Object handle(Request request, Response response) {
     List<List<String>> responseMap = new ArrayList<>();
-    if (!this.source.getIsLoaded()) {
+    try {
+      if (!this.source.getHeader().isEmpty()) {
+        responseMap.add(this.source.getHeader());
+      }
+      responseMap.addAll(this.source.getData());
+      return new DataSuccessResponse(responseMap).serialize();
+    } catch (UnloadedCSVException e) {
       response.status(200);
-      String errorType = "missing_file";
-      String errorMessage = "A file hasn't been loaded to the CSV parser";
+      String errorType = "unloaded_csv";
+      String errorMessage = e.getMessage();
       Map<String, String> details = new HashMap<>();
-      details.put("missing_file", this.source.getData().toString());
-//      details.put("error_arg", this.source.getData() == null ? "missing_file");
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     }
-    if (!this.source.getHeader().isEmpty()) {
-      responseMap.add(this.source.getHeader());
-    }
-    responseMap.addAll(this.source.getData());
-    return new DataSuccessResponse(responseMap).serialize();
   }
 }

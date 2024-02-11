@@ -11,8 +11,6 @@ import edu.brown.cs.student.main.server.datasource.CSVSource;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import okio.Buffer;
@@ -28,7 +26,9 @@ public class CSVHandlersTest {
     Spark.port(0);
     Logger.getLogger("").setLevel(Level.WARNING); // empty name = root logger
   }
+
   private CSVSource creator;
+
   @BeforeEach
   public void setup() {
     // Re-initialize state, etc. for _every_ test method run
@@ -91,6 +91,7 @@ public class CSVHandlersTest {
 
     clientConnection.disconnect();
   }
+
   @Test
   public void testSearchHandlerNoValueAndColumn() throws IOException {
     HttpURLConnection clientConnection = tryRequest("searchcsv");
@@ -110,6 +111,7 @@ public class CSVHandlersTest {
 
     clientConnection.disconnect();
   }
+
   @Test
   public void testViewHandlerNoFile() throws IOException {
     HttpURLConnection clientConnection = tryRequest("viewcsv");

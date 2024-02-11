@@ -14,7 +14,7 @@ public class CSVSource {
   private CSVSearcher searcher;
   private List<String> header;
   private List<List<String>> data;
-  private Boolean isLoaded;
+  private Boolean isLoaded = false;
 
   public void loadData(String fileName, boolean hasHeader)
       throws IOException, FactoryFailureException {
@@ -26,37 +26,46 @@ public class CSVSource {
     this.isLoaded = true;
   }
 
-  public List<List<String>> search(String value, String columnValue) throws HeaderValueException {
+  public List<List<String>> search(String value, String columnValue)
+      throws HeaderValueException, UnloadedCSVException {
     if (this.isLoaded) {
-      return this.searcher.search(value, columnValue);
+      return new ArrayList<>(this.searcher.search(value, columnValue));
     } else {
-      // throw error
+      throw new UnloadedCSVException("Searching requires a loaded CSV!");
     }
-    return null;
-  }
-  public List<String> getHeader() {
-    return new ArrayList<>(this.header);
   }
 
-  public List<List<String>> getData() {
-    return new ArrayList<>(this.data);
+  public List<String> getHeader() throws UnloadedCSVException {
+    if (this.isLoaded) {
+      return new ArrayList<>(this.header);
+    } else {
+      throw new UnloadedCSVException("Viewing requires a loaded CSV!");
+    }
+  }
+
+  public List<List<String>> getData() throws UnloadedCSVException {
+    if (this.isLoaded) {
+      return new ArrayList<>(this.data);
+    } else {
+      throw new UnloadedCSVException("Viewing requires a loaded CSV!");
+    }
   }
 
   /**
    * Getter method for testing handlers when there's no file
+   *
    * @return
    */
-  public Boolean getIsLoaded()
-  {
+  public Boolean getIsLoaded() {
     return this.getIsLoaded();
   }
+
   /**
-   * Setter method for testing handlers when there's no file,
-   * To reset CSV variables
+   * Setter method for testing handlers when there's no file, To reset CSV variables
+   *
    * @return
    */
-  public void setIsLoaded()
-  {
+  public void setIsLoaded() {
     this.isLoaded = false;
   }
 }

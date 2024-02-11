@@ -24,7 +24,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(fileReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
     List<List<String>> result = csvSearcher.search("1", null);
 
     List<List<String>> expectedResult = new ArrayList<>();
@@ -44,7 +44,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
     List<List<String>> result = csvSearcher.search("Number 1", null);
 
     List<List<String>> expectedResult = new ArrayList<>();
@@ -64,7 +64,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
     List<List<String>> result = csvSearcher.search("\"1,4\"", null);
 
     List<List<String>> expectedResult = new ArrayList<>();
@@ -84,7 +84,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(fileReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
     List<List<String>> result = csvSearcher.search("10", null);
     List<List<String>> expectedResult = new ArrayList<>();
 
@@ -99,7 +99,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
     List<List<String>> result = csvSearcher.search("1", "Num2");
     List<List<String>> expectedResult = new ArrayList<>();
     expectedResult.add(new ArrayList<>());
@@ -120,7 +120,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
     List<List<String>> result = csvSearcher.search("1", "1");
     List<List<String>> expectedResult = new ArrayList<>();
     expectedResult.add(new ArrayList<>());
@@ -144,7 +144,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
 
     Assert.assertThrows(HeaderValueException.class, () -> csvSearcher.search("1", "Num4"));
   }
@@ -157,7 +157,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
     List<List<String>> result = csvSearcher.search("1", null);
     List<List<String>> expectedResult = new ArrayList<>();
     expectedResult.add(new ArrayList<>());
@@ -185,7 +185,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
 
     Assert.assertThrows(IndexOutOfBoundsException.class, () -> csvSearcher.search("1", "9"));
   }
@@ -198,7 +198,7 @@ public class CSVSearcherTest {
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
-    CSVSearcher csvSearcher = new CSVSearcher(header,data);
+    CSVSearcher csvSearcher = new CSVSearcher(header, data);
     List<List<String>> result = csvSearcher.search("1", "2");
     List<List<String>> expectedResult = new ArrayList<>();
 
@@ -206,4 +206,4 @@ public class CSVSearcherTest {
     Assert.assertEquals(result.size(), 0);
     Assert.assertEquals(result, expectedResult);
   }
- }
+}
