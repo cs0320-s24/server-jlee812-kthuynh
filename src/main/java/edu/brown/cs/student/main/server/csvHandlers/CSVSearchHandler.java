@@ -9,7 +9,7 @@ import spark.Route;
 
 public class CSVSearchHandler implements Route {
 
-  private CSVSource source;
+  private final CSVSource source;
 
   public CSVSearchHandler(CSVSource source) {
     this.source = source;

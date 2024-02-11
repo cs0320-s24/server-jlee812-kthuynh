@@ -1,7 +1,7 @@
-package edu.brown.cs.student.main.user.search;
+package edu.brown.cs.student.main.csv.search;
 
-import edu.brown.cs.student.main.parser.CreatorFromRow;
-import edu.brown.cs.student.main.parser.FactoryFailureException;
+import edu.brown.cs.student.main.csv.parser.CreatorFromRow;
+import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
 import java.util.List;
 
 public class StringListFromRow implements CreatorFromRow<List<String>> {

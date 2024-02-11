@@ -1,6 +1,6 @@
-package edu.brown.cs.student.main.user.search;
+package edu.brown.cs.student.main.csv.search;
 
-import edu.brown.cs.student.main.parser.FactoryFailureException;
+import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
