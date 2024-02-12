@@ -282,10 +282,8 @@
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected =
-
- "DataSuccessResponse[response_type=success,responseMap=[[Cranston,\"77,145.00\",\"95,763.00\",\"38,269.00\"]]]";
-
+    String expected = "DataSuccessResponse[response_type=success,responseMap={column=,value=CRANSTON"
+        + ",results=[[Cranston,\"77,145.00\",\"95,763.00\",\"38,269.00\"]]}]";
     assertEquals(
         response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
 
@@ -311,7 +309,8 @@
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected = "DataSuccessResponse[response_type=success,responseMap=[]]";
+    String expected = "DataSuccessResponse[response_type=success,responseMap={column=lol,value=hi,"
+        + "results=[]}]";
 
     assertEquals(
         response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
@@ -337,10 +336,10 @@
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected =
-        "DataSuccessResponse[response_type=success,responseMap="
-            + "[[RI,Asian-PacificIslander,\"$1,080.09\",18956.71657,$1.02,4%,Multiracial],"
-            + "[RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino]]]";
+
+    String expected = "DataSuccessResponse[response_type=success,responseMap="
+        + "{value=Multiracial,results=[[RI,Asian-PacificIslander,\"$1,080.09\",18956.71657,$1.02,4%,Multiracial],"
+        + "[RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino]]}]";
 
     assertEquals(
         response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
