@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import java.util.Map;
 
-public record LoadSuccessResponse(String response_type, Map<String, Object> responseMap) {
+public record LoadSuccessResponse(String result, Map<String, Object> responseMap) {
 
   public LoadSuccessResponse(Map<String, Object> responseMap) {
     this("success", responseMap);

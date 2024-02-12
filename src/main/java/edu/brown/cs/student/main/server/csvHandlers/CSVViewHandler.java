@@ -30,7 +30,7 @@ public class CSVViewHandler implements Route {
       return new DataSuccessResponse(responseMap).serialize();
     } catch (UnloadedCSVException e) {
       response.status(200);
-      String errorType = "unloaded_csv";
+      String errorType = "error_unloaded_csv";
       String errorMessage = e.getMessage();
       Map<String, String> details = new HashMap<>();
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();

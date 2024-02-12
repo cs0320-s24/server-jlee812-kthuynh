@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import java.util.Map;
 
-public record ErrorResponse(String response_type, Map<String, Object> responseMap) {
+public record ErrorResponse(String result, Map<String, Object> responseMap) {
 
   public ErrorResponse(Map<String, Object> responseMap) {
     this("error", responseMap);
