@@ -6,7 +6,6 @@ import edu.brown.cs.student.main.server.datasource.CSVSource;
 import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
 import edu.brown.cs.student.main.server.datasource.UnloadedCSVException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
@@ -36,7 +35,10 @@ public class CSVSearchHandler implements Route {
         return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
       }
 
-      List<List<String>> responseMap = this.source.search(value, column);
+      Map<String, Object> responseMap = new HashMap<>();
+      responseMap.put("value", value);
+      responseMap.put("column", column);
+      responseMap.put("results", this.source.search(value, column));
       return new DataSuccessResponse(responseMap).serialize();
     } catch (HeaderValueException e) {
       response.status(200);

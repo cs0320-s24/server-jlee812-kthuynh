@@ -2,6 +2,8 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.server.censusHandler.CensusHandler;
+import edu.brown.cs.student.main.server.censusHandler.CensusSource;
 import edu.brown.cs.student.main.server.csvHandlers.CSVSearchHandler;
 import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
 import edu.brown.cs.student.main.server.csvHandlers.loadHandler.CSVLoadHandler;
@@ -11,6 +13,7 @@ import spark.Spark;
 public class Server {
   public static void main(String[] args) {
     CSVSource creator = new CSVSource();
+    CensusSource source = new CensusSource();
 
     int port = 3232;
     Spark.port(port);
@@ -27,6 +30,7 @@ public class Server {
     Spark.get("loadcsv", new CSVLoadHandler(creator));
     Spark.get("viewcsv", new CSVViewHandler(creator));
     Spark.get("searchcsv", new CSVSearchHandler(creator));
+    Spark.get("broadband", new CensusHandler(source));
 
     Spark.init();
     Spark.awaitInitialization();

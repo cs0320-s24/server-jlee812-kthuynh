@@ -2,11 +2,11 @@ package edu.brown.cs.student.main.server.datasource;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import java.util.List;
+import java.util.Map;
 
-public record DataSuccessResponse(String response_type, List<List<String>> responseMap) {
+public record DataSuccessResponse(String response_type, Map<String, Object> responseMap) {
 
-  public DataSuccessResponse(List<List<String>> responseMap) {
+  public DataSuccessResponse(Map<String, Object> responseMap) {
     this("success", responseMap);
   }
 
