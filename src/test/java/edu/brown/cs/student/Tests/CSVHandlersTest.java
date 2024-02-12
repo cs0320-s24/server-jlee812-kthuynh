@@ -1,27 +1,27 @@
- package edu.brown.cs.student.Tests;
+package edu.brown.cs.student.Tests;
 
- import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
- import com.squareup.moshi.Moshi;
- import edu.brown.cs.student.main.server.ErrorResponse;
- import edu.brown.cs.student.main.server.csvHandlers.CSVSearchHandler;
- import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
- import edu.brown.cs.student.main.server.csvHandlers.loadHandler.CSVLoadHandler;
- import edu.brown.cs.student.main.server.datasource.CSVSource;
- import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
- import java.io.IOException;
- import java.net.HttpURLConnection;
- import java.net.URL;
- import java.util.logging.Level;
- import java.util.logging.Logger;
- import okio.Buffer;
- import org.junit.jupiter.api.AfterEach;
- import org.junit.jupiter.api.BeforeAll;
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Test;
- import spark.Spark;
+import com.squareup.moshi.Moshi;
+import edu.brown.cs.student.main.server.ErrorResponse;
+import edu.brown.cs.student.main.server.csvHandlers.CSVSearchHandler;
+import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
+import edu.brown.cs.student.main.server.csvHandlers.loadHandler.CSVLoadHandler;
+import edu.brown.cs.student.main.server.datasource.CSVSource;
+import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import okio.Buffer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import spark.Spark;
 
- public class CSVHandlersTest {
+public class CSVHandlersTest {
   @BeforeAll
   public static void setup_before_everything() {
     Spark.port(0);
@@ -173,8 +173,7 @@
             .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
 
     System.out.println(response);
-    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception,
- but
+    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception, but
     // a real Json reply.
 
     clientConnection.disconnect();
@@ -194,8 +193,7 @@
             .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
 
     System.out.println(response);
-    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception,
- but
+    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception, but
     // a real Json reply.
 
     clientConnection.disconnect();
@@ -215,8 +213,7 @@
             .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
 
     System.out.println(response);
-    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception,
- but
+    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception, but
     // a real Json reply.
 
     clientConnection.disconnect();
@@ -237,8 +234,7 @@
             .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
 
     System.out.println(response);
-    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception,
- but
+    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception, but
     // a real Json reply.
 
     clientConnection.disconnect();
@@ -260,8 +256,7 @@
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
     String expected =
-
- "DataSuccessResponse[response_type=success,responseMap=[[RI,White,\"$1,058.47\",395773.6521,$1.00,75%]]]";
+        "DataSuccessResponse[response_type=success,responseMap=[[RI,White,\"$1,058.47\",395773.6521,$1.00,75%]]]";
 
     // assertEquals(
     // response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
@@ -282,8 +277,10 @@
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected = "DataSuccessResponse[response_type=success,responseMap={column=,value=CRANSTON"
-        + ",results=[[Cranston,\"77,145.00\",\"95,763.00\",\"38,269.00\"]]}]";
+    String expected =
+        "DataSuccessResponse[response_type=success,responseMap={column=,value=CRANSTON"
+            + ",results=[[Cranston,\"77,145.00\",\"95,763.00\",\"38,269.00\"]]}]";
+
     assertEquals(
         response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
 
@@ -309,8 +306,9 @@
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected = "DataSuccessResponse[response_type=success,responseMap={column=lol,value=hi,"
-        + "results=[]}]";
+    String expected =
+        "DataSuccessResponse[response_type=success,responseMap={column=lol,value=hi,"
+            + "results=[]}]";
 
     assertEquals(
         response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
@@ -336,14 +334,14 @@
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-
-    String expected = "DataSuccessResponse[response_type=success,responseMap="
-        + "{value=Multiracial,results=[[RI,Asian-PacificIslander,\"$1,080.09\",18956.71657,$1.02,4%,Multiracial],"
-        + "[RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino]]}]";
+    String expected =
+        "DataSuccessResponse[response_type=success,responseMap="
+            + "{value=Multiracial,results=[[RI,Asian-PacificIslander,\"$1,080.09\",18956.71657,$1.02,4%,Multiracial],"
+            + "[RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino]]}]";
 
     assertEquals(
         response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
 
     clientConnection.disconnect();
   }
- }
+}
