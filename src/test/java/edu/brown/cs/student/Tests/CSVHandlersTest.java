@@ -1,7 +1,6 @@
 package edu.brown.cs.student.Tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.server.ErrorResponse;
@@ -76,6 +75,7 @@ public class CSVHandlersTest {
 
   /**
    * tryRequest for load handler
+   *
    * @param apiCall
    * @param file
    * @return
@@ -84,8 +84,16 @@ public class CSVHandlersTest {
   private static HttpURLConnection tryLoadRequest(String apiCall, String header, String file)
       throws IOException {
     // Configure the connection (but don't actually send the request yet)
-    URL requestURL = new URL("http://localhost:" + Spark.port() + "/" + apiCall + "?header="
-    + header + "&file=" + file);
+    URL requestURL =
+        new URL(
+            "http://localhost:"
+                + Spark.port()
+                + "/"
+                + apiCall
+                + "?header="
+                + header
+                + "&file="
+                + file);
     HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
 
     // The default method is "GET", which is what we're using here.
@@ -98,16 +106,26 @@ public class CSVHandlersTest {
 
   /**
    * tryRequest for CSVSearchHandler
+   *
    * @param apiCall
    * @param value
    * @param col
    * @return
    * @throws IOException
    */
-  private static HttpURLConnection trySearchRequest(String apiCall, String value, String col) throws IOException {
+  private static HttpURLConnection trySearchRequest(String apiCall, String value, String col)
+      throws IOException {
     // Configure the connection (but don't actually send the request yet)
-    URL requestURL = new URL("http://localhost:" + Spark.port() + "/" + apiCall + "?value="
-        + value + "&column=" + col);
+    URL requestURL =
+        new URL(
+            "http://localhost:"
+                + Spark.port()
+                + "/"
+                + apiCall
+                + "?value="
+                + value
+                + "&column="
+                + col);
     HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
 
     // The default method is "GET", which is what we're using here.
@@ -180,8 +198,8 @@ public class CSVHandlersTest {
 
   @Test
   public void testLoadValidFile() throws IOException {
-    HttpURLConnection clientConnection = tryLoadRequest("loadcsv","true","data/census/dol_ri_"
-        + "earnings_disparity.csv");
+    HttpURLConnection clientConnection =
+        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_" + "earnings_disparity.csv");
     // Get an OK response (the *connection* worked, the *API* provides an error response)
     assertEquals(200, clientConnection.getResponseCode());
 
@@ -201,12 +219,12 @@ public class CSVHandlersTest {
 
   @Test
   public void testSearchValidCol() throws IOException {
-    HttpURLConnection clientConnection = tryLoadRequest("loadcsv","true","data/census/dol_ri_"
-        + "earnings_disparity.csv");
+    HttpURLConnection clientConnection =
+        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_" + "earnings_disparity.csv");
     // Get an OK response (the *connection* worked, the *API* provides an error response)
     assertEquals(200, clientConnection.getResponseCode());
 
-    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv","white","1");
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv", "white", "1");
     // Now we need to see whether we've got the expected Json response.
     assertEquals(200, clientConnection2.getResponseCode());
     Moshi moshi = new Moshi.Builder().build();
@@ -214,10 +232,11 @@ public class CSVHandlersTest {
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected = "DataSuccessResponse[response_type=success,responseMap=[[RI,White,\"$1,058.47\",395773.6521,$1.00,75%]]]";
+    String expected =
+        "DataSuccessResponse[response_type=success,responseMap=[[RI,White,\"$1,058.47\",395773.6521,$1.00,75%]]]";
 
-    assertEquals(response.toString().trim().replaceAll("\\s", ""),
-        expected.trim().replaceAll("\\s", ""));
+    assertEquals(
+        response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
 
     clientConnection.disconnect();
   }

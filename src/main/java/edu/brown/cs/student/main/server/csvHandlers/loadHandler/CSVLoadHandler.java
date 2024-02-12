@@ -26,8 +26,8 @@ public class CSVLoadHandler implements Route {
     // If there are missing parameters.
     if (hasHeader == null || fileName == null) {
       response.status(200);
-      String errorType = "missing_parameter";
-      String errorMessage = "The endpoint loadcsv is missing requires queries";
+      String errorType = "error_bad_request";
+      String errorMessage = "The endpoint loadcsv is missing required queries";
       Map<String, String> details = new HashMap<>();
       details.put("header", hasHeader);
       details.put("file", fileName);
@@ -38,7 +38,7 @@ public class CSVLoadHandler implements Route {
     // If the file is not in the protected directory
     if (!fileName.startsWith("data")) {
       response.status(400);
-      String errorType = "invalid_parameter";
+      String errorType = "error_bad_request";
       String errorMessage = "File must be in data folder";
       Map<String, String> details = new HashMap<>();
       details.put("error_arg", "file");
@@ -49,7 +49,7 @@ public class CSVLoadHandler implements Route {
     // If the header is not a boolean value
     if (!hasHeader.equalsIgnoreCase("true") && !hasHeader.equalsIgnoreCase("false")) {
       response.status(400);
-      String errorType = "invalid_parameter";
+      String errorType = "error_bad_request";
       String errorMessage = "Header must be true or false";
       Map<String, String> details = new HashMap<>();
       details.put("error_arg", "header");
@@ -66,14 +66,14 @@ public class CSVLoadHandler implements Route {
       return new LoadSuccessResponse(responseMap).serialize();
     } catch (IOException e) {
       response.status(500);
-      String errorType = "file_reading_error";
+      String errorType = "error_datasource";
       String errorMessage = e.getMessage();
       Map<String, String> details = new HashMap<>();
       details.put("error_arg", "file");
       details.put("file", fileName);
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     } catch (FactoryFailureException e) {
-      String errorType = "malformed_csv";
+      String errorType = "error_malformed_csv";
       String errorMessage = e.getMessage();
       Map<String, String> details = new HashMap<>();
       details.put("error_at_row", e.getRow().toString());

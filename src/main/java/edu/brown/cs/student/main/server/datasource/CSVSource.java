@@ -52,15 +52,6 @@ public class CSVSource {
   }
 
   /**
-   * Getter method for testing handlers when there's no file
-   *
-   * @return
-   */
-  public Boolean getIsLoaded() {
-    return this.getIsLoaded();
-  }
-
-  /**
    * Setter method for testing handlers when there's no file, To reset CSV variables
    *
    * @return

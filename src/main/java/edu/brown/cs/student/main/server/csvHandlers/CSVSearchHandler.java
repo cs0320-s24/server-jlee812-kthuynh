@@ -27,10 +27,10 @@ public class CSVSearchHandler implements Route {
     try {
       if (value == null) {
         response.status(200);
-        String errorType = "missing_parameter";
+        String errorType = "error_bad_request";
         String errorMessage = "The endpoint searchcsv is missing required queries";
         Map<String, String> details = new HashMap<>();
-        details.put("value", value);
+        details.put("value", null);
         details.put("column", column);
         details.put("error_arg", "value");
         return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
@@ -40,7 +40,7 @@ public class CSVSearchHandler implements Route {
       return new DataSuccessResponse(responseMap).serialize();
     } catch (HeaderValueException e) {
       response.status(200);
-      String errorType = "missing_header_value";
+      String errorType = "error_bad_header_value";
       String errorMessage = e.getMessage();
       Map<String, String> details = new HashMap<>();
       details.put("column", column);
@@ -49,7 +49,7 @@ public class CSVSearchHandler implements Route {
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     } catch (UnloadedCSVException e) {
       response.status(200);
-      String errorType = "unloaded_csv";
+      String errorType = "error_unloaded_csv";
       String errorMessage = e.getMessage();
       Map<String, String> details = new HashMap<>();
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
