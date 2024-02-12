@@ -1,5 +1,9 @@
 package edu.brown.cs.student.main.server.censusHandler;
 
+import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -17,10 +21,11 @@ public class CensusHandler implements Route {
     String county = request.queryParams("county");
 
     Location location = new Location(state, county);
-    String stateCode = this.source.getStateCode(location.state());
-    String countyCode = this.source.getCountyCode(stateCode, location.county());
-    return stateCode + " " + countyCode;
-    // System.out.println(this.source.resolveAreaCodes(location.state(), location.county()));
-    // return "Success!";
+    Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("time", LocalTime.now().toString());
+    responseMap.put("state", state);
+    responseMap.put("county", county);
+    responseMap.put("data", this.source.getBroadband(location));
+    return new DataSuccessResponse(responseMap).serialize();
   }
 }
