@@ -136,6 +136,34 @@ public class CSVHandlersTest {
     return clientConnection;
   }
 
+  /**
+   * Alternative tryRequest for search, without col specified
+   * @param apiCall
+   * @param value
+   * @return
+   * @throws IOException
+   */
+  private static HttpURLConnection trySearchRequest(String apiCall, String value)
+      throws IOException {
+    // Configure the connection (but don't actually send the request yet)
+    URL requestURL =
+        new URL(
+            "http://localhost:"
+                + Spark.port()
+                + "/"
+                + apiCall
+                + "?value="
+                + value);
+    HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
+
+    // The default method is "GET", which is what we're using here.
+    // If we were using "POST", we'd need to say so.
+    clientConnection.setRequestMethod("GET");
+
+    clientConnection.connect();
+    return clientConnection;
+  }
+
   @Test
   public void testLoadHandlerNoFile() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv");
@@ -298,15 +326,16 @@ public class CSVHandlersTest {
         "data/census/dol_ri_earnings_disparity2.csv");
     assertEquals(200, clientConnection.getResponseCode());
 
-    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv","Multiracial",
-        "Data_Type");
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv","Multiracial");
     assertEquals(200, clientConnection2.getResponseCode());
     Moshi moshi = new Moshi.Builder().build();
     DataSuccessResponse response =
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected = "DataSuccessResponse[response_type=success,responseMap=[]]";
+    String expected = "DataSuccessResponse[response_type=success,responseMap="
+        + "[[RI,Asian-PacificIslander,\"$1,080.09\",18956.71657,$1.02,4%,Multiracial],"
+        + "[RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino]]]";
 
     assertEquals(response.toString().trim().replaceAll("\\s", ""),
         expected.trim().replaceAll("\\s", ""));
