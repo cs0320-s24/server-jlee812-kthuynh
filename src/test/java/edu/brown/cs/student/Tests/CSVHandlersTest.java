@@ -221,4 +221,77 @@ public class CSVHandlersTest {
 
     clientConnection.disconnect();
   }
+  @Test
+  public void testSearchValidColNoHeader() throws IOException {
+    HttpURLConnection clientConnection = tryLoadRequest("loadcsv","false",
+        "data/census/ri_income_us_census_2021.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv","CRANSTON","");
+    assertEquals(200, clientConnection2.getResponseCode());
+    Moshi moshi = new Moshi.Builder().build();
+    DataSuccessResponse response =
+        moshi
+            .adapter(DataSuccessResponse.class)
+            .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
+    String expected = "DataSuccessResponse[response_type=success,responseMap=[[Cranston,\"77,145.00\",\"95,763.00\",\"38,269.00\"]]]";
+
+    assertEquals(response.toString().trim().replaceAll("\\s", ""),
+        expected.trim().replaceAll("\\s", ""));
+
+    clientConnection.disconnect();
+  }
+
+  /**
+   * Tests that a bad search input doesn't crash the program. Instead it is caught
+   * by the program, and displays an empty responseMap
+   * @throws IOException
+   */
+  @Test
+  public void testSearchBadInput() throws IOException {
+    HttpURLConnection clientConnection = tryLoadRequest("loadcsv","false",
+        "data/census/ri_income_us_census_2021.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv","hi","lol");
+    assertEquals(200, clientConnection2.getResponseCode());
+    Moshi moshi = new Moshi.Builder().build();
+    DataSuccessResponse response =
+        moshi
+            .adapter(DataSuccessResponse.class)
+            .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
+    String expected = "DataSuccessResponse[response_type=success,responseMap=[]]";
+
+    assertEquals(response.toString().trim().replaceAll("\\s", ""),
+        expected.trim().replaceAll("\\s", ""));
+
+    clientConnection.disconnect();
+  }
+
+  /**
+   * Tests that in the case where 2 columns have a value, both
+   * rows are included.
+   * @throws IOException
+   */
+  @Test
+  public void testSearchMultipleCols() throws IOException {
+    HttpURLConnection clientConnection = tryLoadRequest("loadcsv","true",
+        "data/census/dol_ri_earnings_disparity2.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv","Multiracial",
+        "Data_Type");
+    assertEquals(200, clientConnection2.getResponseCode());
+    Moshi moshi = new Moshi.Builder().build();
+    DataSuccessResponse response =
+        moshi
+            .adapter(DataSuccessResponse.class)
+            .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
+    String expected = "DataSuccessResponse[response_type=success,responseMap=[]]";
+
+    assertEquals(response.toString().trim().replaceAll("\\s", ""),
+        expected.trim().replaceAll("\\s", ""));
+
+    clientConnection.disconnect();
+  }
 }
