@@ -10,11 +10,12 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CensusSource {
 
-  private String getJSONString(String endpoint)
+  private static String getJSONString(String endpoint)
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest buildCensusApiRequest =
         HttpRequest.newBuilder()
@@ -30,20 +31,19 @@ public class CensusSource {
     return sentCensusApiResponse.body();
   }
 
-  private List<List<String>> getJSONAsList(String jsonString) throws IOException {
+  private static List<List<String>> getJSONAsList(String jsonString) throws IOException {
     Moshi moshi = new Moshi.Builder().build();
     Type listType =
         Types.newParameterizedType(
             List.class, Types.newParameterizedType(List.class, String.class));
     JsonAdapter<List<List<String>>> adapter = moshi.adapter(listType);
-    List<List<String>> deserializedList = adapter.fromJson(jsonString);
-    return deserializedList;
+    return adapter.fromJson(jsonString);
   }
 
-  public String getStateCode(String state) {
+  private static String getStateCode(String state) {
     try {
-      String jsonString = this.getJSONString("2010/dec/sf1?get=NAME&for=state:*");
-      List<List<String>> deserializedStateCodes = this.getJSONAsList(jsonString);
+      String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=state:*");
+      List<List<String>> deserializedStateCodes = getJSONAsList(jsonString);
 
       if (deserializedStateCodes != null) {
         for (List<String> row : deserializedStateCodes) {
@@ -59,11 +59,10 @@ public class CensusSource {
     }
   }
 
-  public String getCountyCode(String stateCode, String county) {
+  private static String getCountyCode(String stateCode, String county) {
     try {
-      String jsonString =
-          this.getJSONString("2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
-      List<List<String>> deserializedCountyCodes = this.getJSONAsList(jsonString);
+      String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
+      List<List<String>> deserializedCountyCodes = getJSONAsList(jsonString);
 
       if (deserializedCountyCodes != null) {
         for (List<String> row : deserializedCountyCodes) {
@@ -77,5 +76,33 @@ public class CensusSource {
     } catch (Exception e) {
       return "Error!";
     }
+  }
+
+  public List<CensusResult> getBroadband(Location location)
+      throws IOException, URISyntaxException, InterruptedException {
+    return getBroadband(location.state(), location.county());
+  }
+
+  private static List<CensusResult> getBroadband(String stateCode, String countyCode)
+      throws IOException, URISyntaxException, InterruptedException {
+    String encodedState = getStateCode(stateCode);
+    String encodedCounty = countyCode;
+    if (!countyCode.equalsIgnoreCase("*")) {
+      encodedCounty = getCountyCode(encodedState, countyCode);
+    }
+
+    EncodedLocation encodedLocation = new EncodedLocation(encodedState, encodedCounty);
+    String jsonString =
+        getJSONString(
+            "2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&"
+                + encodedLocation.getJSONParams());
+
+    List<List<String>> deserializedBroadbandUsage = getJSONAsList(jsonString);
+    List<CensusResult> results = new ArrayList<>();
+    for (int i = 1; i < deserializedBroadbandUsage.size(); i++) {
+      List<String> countyData = deserializedBroadbandUsage.get(i);
+      results.add(new CensusResult(countyData.get(0), countyData.get(1)));
+    }
+    return results;
   }
 }
