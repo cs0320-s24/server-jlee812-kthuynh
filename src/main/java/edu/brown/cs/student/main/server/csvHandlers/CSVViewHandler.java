@@ -21,12 +21,14 @@ public class CSVViewHandler implements Route {
 
   @Override
   public Object handle(Request request, Response response) {
-    List<List<String>> responseMap = new ArrayList<>();
+    Map<String, Object> responseMap = new HashMap<>();
+    List<List<String>> data = new ArrayList<>();
     try {
       if (!this.source.getHeader().isEmpty()) {
-        responseMap.add(this.source.getHeader());
+        data.add(this.source.getHeader());
       }
-      responseMap.addAll(this.source.getData());
+      data.addAll(this.source.getData());
+      responseMap.put("results", data);
       return new DataSuccessResponse(responseMap).serialize();
     } catch (UnloadedCSVException e) {
       response.status(200);
