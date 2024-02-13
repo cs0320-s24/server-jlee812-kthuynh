@@ -12,10 +12,15 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * A class that handles caching.
+ * To change/control how fast and when it caches,
+ * you can edit the final variables maxsize and duration.
+ */
 public class CacheControl {
   private LoadingCache<Location, Map<String, Object>> graphs;
-  private final int maxsize = 1000;
-  private final int duration = 10;
+  private final int maxsize = 500;
+  private final int duration = 5;
 
   public CacheControl(CensusSource source) {
     this.graphs =
