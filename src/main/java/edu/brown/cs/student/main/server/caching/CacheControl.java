@@ -1,10 +1,12 @@
 package edu.brown.cs.student.main.server.caching;
 
+import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import edu.brown.cs.student.main.server.censusHandler.CensusSource;
 import edu.brown.cs.student.main.server.censusHandler.Location;
+import edu.brown.cs.student.main.server.censusHandler.LocationNotFoundException;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,7 +47,13 @@ public class CacheControl {
    *
    * @return
    */
-  public Map<String, Object> get(Location location) throws ExecutionException {
-    return Collections.unmodifiableMap(this.graphs.get(location));
+  public Map<String, Object> get(Location location)
+      throws LocationNotFoundException {
+    try {
+      return Collections.unmodifiableMap(this.graphs.get(location));
+    } catch (ExecutionException e) {
+      Throwables.propagateIfPossible(e.getCause(), LocationNotFoundException.class);
+      throw new IllegalStateException("Error during caching process!");
+    }
   }
 }

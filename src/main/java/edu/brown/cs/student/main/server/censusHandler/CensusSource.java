@@ -17,8 +17,17 @@ import java.util.Map;
 
 public class CensusSource {
   private static Map<String, String> stateCodes = new HashMap<>();
-  private static Map<String, Map<String, String>> countyCodes = new HashMap<>();
+  private static final Map<String, Map<String, String>> countyCodes = new HashMap<>();
 
+  /**
+   * A method that gets the JSON as a string.
+   *
+   * @param endpoint The endpoint from which the JSON is pulled.
+   * @return The JSON as a string
+   * @throws IOException Thrown when there is trouble opening the file.
+   * @throws InterruptedException Thrown when the thread is interrupted.
+   * @throws URISyntaxException Thrown when the uri does not exist.
+   */
   private static String getJSONString(String endpoint)
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest buildCensusApiRequest =
@@ -35,6 +44,13 @@ public class CensusSource {
     return sentCensusApiResponse.body();
   }
 
+  /**
+   * A method that turns the JSON string into a list of a list of strings.
+   *
+   * @param jsonString The JSON string.
+   * @return A list of a list of strings representing the parsed census JSON.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   */
   private static List<List<String>> getJSONAsList(String jsonString) throws IOException {
     Moshi moshi = new Moshi.Builder().build();
     Type listType =
@@ -71,10 +87,10 @@ public class CensusSource {
     }
 
     countyCodes.put(stateCode, mappedCountyCodes);
-    System.out.println(countyCodes);
   }
 
-  private static String getStateCode(String state) throws Exception {
+  private static String getStateCode(String state)
+      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
     if (stateCodes.isEmpty()) {
       getStateCodes();
     }
@@ -82,26 +98,7 @@ public class CensusSource {
     if (stateCodes.containsKey(state.toLowerCase())) {
       return stateCodes.get(state.toLowerCase());
     } else {
-      throw new Exception("State not found!");
-    }
-  }
-
-  private static String getCountyCode(String stateCode, String county) {
-    try {
-      String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
-      List<List<String>> deserializedCountyCodes = getJSONAsList(jsonString);
-
-      if (deserializedCountyCodes != null) {
-        for (List<String> row : deserializedCountyCodes) {
-          if (row.get(0).toLowerCase().contains(county.toLowerCase())) {
-            return row.get(2);
-          }
-        }
-      }
-
-      return "Not found!";
-    } catch (Exception e) {
-      return "Error!";
+      throw new LocationNotFoundException("State not found: " + state, "state");
     }
   }
 
@@ -109,20 +106,18 @@ public class CensusSource {
     return getBroadband(location.state(), location.county());
   }
 
-  private static List<CensusResult> getBroadband(String stateCode, String countyCode)
-      throws Exception {
-    String encodedState = getStateCode(stateCode);
-    String encodedCounty = countyCode;
+  private static List<CensusResult> getBroadband(String state, String county)
+      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
+    String encodedState = getStateCode(state);
+    String encodedCounty = county;
 
-    System.out.println(countyCode);
-    if (!countyCode.equalsIgnoreCase("*")) {
+    if (!county.equalsIgnoreCase("*")) {
       getCountyCodes(encodedState);
-      encodedCounty = getCountyCode(encodedState, countyCode);
-      // if (countyCodes.get(encodedState).containsKey(countyCode)) {
-      // encodedCounty = countyCodes.get(encodedState).get(countyCode.toLowerCase());
-      // } else {
-      // throw new Exception("County not found!");
-      // }
+      if (countyCodes.get(encodedState).containsKey(county)) {
+        encodedCounty = countyCodes.get(encodedState).get(county.toLowerCase());
+      } else {
+        throw new LocationNotFoundException("County not found: " + county, "county");
+      }
     }
 
     EncodedLocation encodedLocation = new EncodedLocation(encodedState, encodedCounty);

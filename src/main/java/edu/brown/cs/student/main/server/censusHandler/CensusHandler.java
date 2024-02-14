@@ -39,8 +39,15 @@ public class CensusHandler implements Route {
       Location location = new Location(state, county);
       Map<String, Object> responseMap = this.cacher.get(location);
       return new DataSuccessResponse(responseMap).serialize();
-    } catch (Exception e) {
-      return new HandlerErrorBuilder("failed", e.getMessage(), new HashMap<>()).serialize();
+    } catch (LocationNotFoundException e) {
+      response.status(200);
+      String errorType = "error_bad_location";
+      String errorMessage = e.getMessage();
+      Map<String, String> details = new HashMap<>();
+      details.put("state", state);
+      details.put("county", county);
+      details.put("error_arg", e.getLocationType());
+      return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     }
   }
 }
