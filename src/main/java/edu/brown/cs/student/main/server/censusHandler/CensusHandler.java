@@ -1,33 +1,46 @@
 package edu.brown.cs.student.main.server.censusHandler;
 
+import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.caching.CacheControl;
 import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
+import java.util.HashMap;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
 public class CensusHandler implements Route {
-  private final CensusSource source;
-  private CacheControl cacher;
+  private final CacheControl cacher;
 
   public CensusHandler(CensusSource source) {
-    this.source = source;
-    this.cacher = new CacheControl(this.source);
+    this.cacher = new CacheControl(source);
   }
 
   @Override
-  public Object handle(Request request, Response response) throws Exception {
+  public Object handle(Request request, Response response) {
     String state = request.queryParams("state");
     String county = request.queryParams("county");
 
-    Location location = new Location(state, county);
-    Map<String, Object> responseMap = this.cacher.get(location);
-    //    Map<String, Object> responseMap = new HashMap<>();
-    //    responseMap.put("time", LocalTime.now().toString());
-    //    responseMap.put("state", state);
-    //    responseMap.put("county", county);
-    //    responseMap.put("data", this.source.getBroadband(location));
-    return new DataSuccessResponse(responseMap).serialize();
+    if (state == null) {
+      response.status(200);
+      String errorType = "error_bad_request";
+      String errorMessage = "The endpoint broadband is missing required queries";
+      Map<String, String> details = new HashMap<>();
+      details.put("state", null);
+      details.put("error_arg", "state");
+      return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
+    }
+
+    if (county == null) {
+      county = "*";
+    }
+
+    try {
+      Location location = new Location(state, county);
+      Map<String, Object> responseMap = this.cacher.get(location);
+      return new DataSuccessResponse(responseMap).serialize();
+    } catch (Exception e) {
+      return new HandlerErrorBuilder("failed", e.getMessage(), new HashMap<>()).serialize();
+    }
   }
 }

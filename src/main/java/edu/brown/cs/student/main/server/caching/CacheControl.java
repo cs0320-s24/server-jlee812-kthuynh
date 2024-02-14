@@ -13,12 +13,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A class that handles caching.
- * To change/control how fast and when it caches,
- * you can edit the final variables maxsize and duration.
+ * A class that handles caching. To change/control how fast and when it caches, you can edit the
+ * final variables maxsize and duration.
  */
 public class CacheControl {
-  private LoadingCache<Location, Map<String, Object>> graphs;
+  private final LoadingCache<Location, Map<String, Object>> graphs;
   private final int maxsize = 500;
   private final int duration = 5;
 
@@ -28,7 +27,7 @@ public class CacheControl {
             .maximumSize(this.maxsize)
             .expireAfterWrite(this.duration, TimeUnit.MINUTES)
             .build(
-                new CacheLoader<Location, Map<String, Object>>() {
+                new CacheLoader<>() {
                   @Override
                   public Map<String, Object> load(Location key) throws Exception {
                     Map<String, Object> responseMap = new HashMap<>();

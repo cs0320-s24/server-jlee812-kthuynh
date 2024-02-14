@@ -11,9 +11,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CensusSource {
+  private static Map<String, String> stateCodes = new HashMap<>();
+  private static Map<String, Map<String, String>> countyCodes = new HashMap<>();
 
   private static String getJSONString(String endpoint)
       throws IOException, InterruptedException, URISyntaxException {
@@ -40,22 +44,45 @@ public class CensusSource {
     return adapter.fromJson(jsonString);
   }
 
-  private static String getStateCode(String state) {
-    try {
-      String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=state:*");
-      List<List<String>> deserializedStateCodes = getJSONAsList(jsonString);
+  private static void getStateCodes() throws IOException, URISyntaxException, InterruptedException {
+    String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=state:*");
+    List<List<String>> deserializedStateCodes = getJSONAsList(jsonString);
 
-      if (deserializedStateCodes != null) {
-        for (List<String> row : deserializedStateCodes) {
-          if (row.get(0).equalsIgnoreCase(state)) {
-            return row.get(1);
-          }
-        }
+    Map<String, String> mappedStateCodes = new HashMap<>();
+    for (List<String> row : deserializedStateCodes) {
+      mappedStateCodes.put(row.get(0).toLowerCase(), row.get(1));
+    }
+
+    stateCodes = mappedStateCodes;
+  }
+
+  private static void getCountyCodes(String stateCode)
+      throws IOException, URISyntaxException, InterruptedException {
+    String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
+    List<List<String>> deserializedCountyCodes = getJSONAsList(jsonString);
+
+    Map<String, String> mappedCountyCodes = new HashMap<>();
+    for (List<String> row : deserializedCountyCodes) {
+      String countyName = row.get(0);
+      if (countyName.lastIndexOf(',') != -1) {
+        countyName = countyName.substring(0, countyName.lastIndexOf(',')).toLowerCase();
       }
+      mappedCountyCodes.put(countyName, row.get(2));
+    }
 
-      return "Not found!";
-    } catch (Exception e) {
-      return "Error!";
+    countyCodes.put(stateCode, mappedCountyCodes);
+    System.out.println(countyCodes);
+  }
+
+  private static String getStateCode(String state) throws Exception {
+    if (stateCodes.isEmpty()) {
+      getStateCodes();
+    }
+
+    if (stateCodes.containsKey(state.toLowerCase())) {
+      return stateCodes.get(state.toLowerCase());
+    } else {
+      throw new Exception("State not found!");
     }
   }
 
@@ -78,17 +105,24 @@ public class CensusSource {
     }
   }
 
-  public List<CensusResult> getBroadband(Location location)
-      throws IOException, URISyntaxException, InterruptedException {
+  public List<CensusResult> getBroadband(Location location) throws Exception {
     return getBroadband(location.state(), location.county());
   }
 
   private static List<CensusResult> getBroadband(String stateCode, String countyCode)
-      throws IOException, URISyntaxException, InterruptedException {
+      throws Exception {
     String encodedState = getStateCode(stateCode);
     String encodedCounty = countyCode;
+
+    System.out.println(countyCode);
     if (!countyCode.equalsIgnoreCase("*")) {
+      getCountyCodes(encodedState);
       encodedCounty = getCountyCode(encodedState, countyCode);
+      // if (countyCodes.get(encodedState).containsKey(countyCode)) {
+      // encodedCounty = countyCodes.get(encodedState).get(countyCode.toLowerCase());
+      // } else {
+      // throw new Exception("County not found!");
+      // }
     }
 
     EncodedLocation encodedLocation = new EncodedLocation(encodedState, encodedCounty);
