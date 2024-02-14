@@ -11,10 +11,23 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CensusSource {
+  private static Map<String, String> stateCodes = new HashMap<>();
+  private static final Map<String, Map<String, String>> countyCodes = new HashMap<>();
 
+  /**
+   * A method that gets the JSON as a string.
+   *
+   * @param endpoint The endpoint from which the JSON is pulled.
+   * @return The JSON as a string
+   * @throws IOException Thrown when there is trouble opening the file.
+   * @throws InterruptedException Thrown when the thread is interrupted.
+   * @throws URISyntaxException Thrown when the uri does not exist.
+   */
   private static String getJSONString(String endpoint)
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest buildCensusApiRequest =
@@ -31,6 +44,13 @@ public class CensusSource {
     return sentCensusApiResponse.body();
   }
 
+  /**
+   * A method that turns the JSON string into a list of a list of strings.
+   *
+   * @param jsonString The JSON string.
+   * @return A list of a list of strings representing the parsed census JSON.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   */
   private static List<List<String>> getJSONAsList(String jsonString) throws IOException {
     Moshi moshi = new Moshi.Builder().build();
     Type listType =
@@ -40,55 +60,64 @@ public class CensusSource {
     return adapter.fromJson(jsonString);
   }
 
-  private static String getStateCode(String state) {
-    try {
-      String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=state:*");
-      List<List<String>> deserializedStateCodes = getJSONAsList(jsonString);
+  private static void getStateCodes() throws IOException, URISyntaxException, InterruptedException {
+    String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=state:*");
+    List<List<String>> deserializedStateCodes = getJSONAsList(jsonString);
 
-      if (deserializedStateCodes != null) {
-        for (List<String> row : deserializedStateCodes) {
-          if (row.get(0).equalsIgnoreCase(state)) {
-            return row.get(1);
-          }
-        }
-      }
-
-      return "Not found!";
-    } catch (Exception e) {
-      return "Error!";
+    Map<String, String> mappedStateCodes = new HashMap<>();
+    for (List<String> row : deserializedStateCodes) {
+      mappedStateCodes.put(row.get(0).toLowerCase(), row.get(1));
     }
+
+    stateCodes = mappedStateCodes;
   }
 
-  private static String getCountyCode(String stateCode, String county) {
-    try {
-      String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
-      List<List<String>> deserializedCountyCodes = getJSONAsList(jsonString);
-
-      if (deserializedCountyCodes != null) {
-        for (List<String> row : deserializedCountyCodes) {
-          if (row.get(0).toLowerCase().contains(county.toLowerCase())) {
-            return row.get(2);
-          }
-        }
-      }
-
-      return "Not found!";
-    } catch (Exception e) {
-      return "Error!";
-    }
-  }
-
-  public List<CensusResult> getBroadband(Location location)
+  private static void getCountyCodes(String stateCode)
       throws IOException, URISyntaxException, InterruptedException {
+    String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
+    List<List<String>> deserializedCountyCodes = getJSONAsList(jsonString);
+
+    Map<String, String> mappedCountyCodes = new HashMap<>();
+    for (List<String> row : deserializedCountyCodes) {
+      String countyName = row.get(0);
+      if (countyName.lastIndexOf(',') != -1) {
+        countyName = countyName.substring(0, countyName.lastIndexOf(',')).toLowerCase();
+      }
+      mappedCountyCodes.put(countyName, row.get(2));
+    }
+
+    countyCodes.put(stateCode, mappedCountyCodes);
+  }
+
+  private static String getStateCode(String state)
+      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
+    if (stateCodes.isEmpty()) {
+      getStateCodes();
+    }
+
+    if (stateCodes.containsKey(state.toLowerCase())) {
+      return stateCodes.get(state.toLowerCase());
+    } else {
+      throw new LocationNotFoundException("State not found: " + state, "state");
+    }
+  }
+
+  public List<CensusResult> getBroadband(Location location) throws Exception {
     return getBroadband(location.state(), location.county());
   }
 
-  private static List<CensusResult> getBroadband(String stateCode, String countyCode)
-      throws IOException, URISyntaxException, InterruptedException {
-    String encodedState = getStateCode(stateCode);
-    String encodedCounty = countyCode;
-    if (!countyCode.equalsIgnoreCase("*")) {
-      encodedCounty = getCountyCode(encodedState, countyCode);
+  private static List<CensusResult> getBroadband(String state, String county)
+      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
+    String encodedState = getStateCode(state);
+    String encodedCounty = county;
+
+    if (!county.equalsIgnoreCase("*")) {
+      getCountyCodes(encodedState);
+      if (countyCodes.get(encodedState).containsKey(county)) {
+        encodedCounty = countyCodes.get(encodedState).get(county.toLowerCase());
+      } else {
+        throw new LocationNotFoundException("County not found: " + county, "county");
+      }
     }
 
     EncodedLocation encodedLocation = new EncodedLocation(encodedState, encodedCounty);

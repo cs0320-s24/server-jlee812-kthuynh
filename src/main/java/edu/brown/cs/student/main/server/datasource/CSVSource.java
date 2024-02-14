@@ -5,6 +5,7 @@ import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
 import edu.brown.cs.student.main.csv.search.CSVSearcher;
 import edu.brown.cs.student.main.csv.search.HeaderValueException;
 import edu.brown.cs.student.main.csv.search.StringListFromRow;
+import edu.brown.cs.student.main.server.csvHandlers.UnloadedCSVException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;

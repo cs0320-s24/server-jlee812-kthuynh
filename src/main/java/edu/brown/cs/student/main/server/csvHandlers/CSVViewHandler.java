@@ -3,7 +3,6 @@ package edu.brown.cs.student.main.server.csvHandlers;
 import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.datasource.CSVSource;
 import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
-import edu.brown.cs.student.main.server.datasource.UnloadedCSVException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -4,7 +4,6 @@ import edu.brown.cs.student.main.csv.search.HeaderValueException;
 import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.datasource.CSVSource;
 import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
-import edu.brown.cs.student.main.server.datasource.UnloadedCSVException;
 import java.util.HashMap;
 import java.util.Map;
 import spark.Request;
