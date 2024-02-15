@@ -35,12 +35,12 @@ public class CacheControl<K, V> {
    *
    * @return
    */
-  public V get(K location) throws Throwable {
+  public V get(K key) throws Throwable {
     try {
       if (this.useCache) {
-        return this.graphs.get(location);
+        return this.graphs.get(key);
       } else {
-        return this.cacheLoader.load(location);
+        return this.cacheLoader.load(key);
       }
     } catch (ExecutionException e) {
       throw (e.getCause());
