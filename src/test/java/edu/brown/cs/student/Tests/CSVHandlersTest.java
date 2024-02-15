@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.server.ErrorResponse;
-import edu.brown.cs.student.main.server.csvHandlers.CSVSearchHandler;
-import edu.brown.cs.student.main.server.csvHandlers.CSVViewHandler;
-import edu.brown.cs.student.main.server.csvHandlers.loadHandler.CSVLoadHandler;
-import edu.brown.cs.student.main.server.datasource.CSVSource;
-import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
+import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVSearchHandler;
+import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVViewHandler;
+import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVLoadHandler;
+import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
+import edu.brown.cs.student.main.server.DataSuccessResponse;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;

@@ -3,7 +3,7 @@ package edu.brown.cs.student.main.server.censusHandler;
 import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.caching.CacheControl;
 import edu.brown.cs.student.main.server.caching.CensusResponseLoader;
-import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
+import edu.brown.cs.student.main.server.DataSuccessResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -22,8 +22,7 @@ public class CensusHandler implements Route {
    * @param source The data source for the handler.
    */
   public CensusHandler(CensusSource source) {
-    this.cacher = new CacheControl<>(new CensusResponseLoader(source), true,
-        500, 5);
+    this.cacher = new CacheControl<>(new CensusResponseLoader(source), true, 500, 5);
   }
 
   /**

@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/** A cache loader for the response of the census. */
 public class CensusResponseLoader extends CacheLoader<Location, Map<String, Object>> {
   private final CensusSource source;
 
@@ -19,6 +20,16 @@ public class CensusResponseLoader extends CacheLoader<Location, Map<String, Obje
     this.source = source;
   }
 
+  /**
+   * The loading method for the cache loader, getting the data from the census datasource.
+   *
+   * @param key The location whose broadband usage is searched for.
+   * @return A response map of relevant broadband usage information.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   * @throws URISyntaxException Thrown when the link was not valid.
+   * @throws InterruptedException Thrown when the thread for connecting is interrupted.
+   * @throws LocationNotFoundException Thrown when the location does not exist.
+   */
   @Override
   public Map<String, Object> load(Location key)
       throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {

@@ -15,8 +15,16 @@ public class CacheControl<K, V> {
   private final CacheLoader<K, V> cacheLoader;
   private final boolean useCache;
 
-  public CacheControl(CacheLoader<K, V> cacheLoader, boolean useCache, int maxSize,
-      int durationMinutes) {
+  /**
+   * The constructor for the cache control.
+   *
+   * @param cacheLoader The loading cache.
+   * @param useCache A boolean for whether to use the cache.
+   * @param maxSize The max size of the cache.
+   * @param durationMinutes The length to keep the cache.
+   */
+  public CacheControl(
+      CacheLoader<K, V> cacheLoader, boolean useCache, int maxSize, int durationMinutes) {
     CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder();
     this.cacheLoader = cacheLoader;
     this.useCache = useCache;
@@ -25,15 +33,13 @@ public class CacheControl<K, V> {
       builder.expireAfterWrite(durationMinutes, TimeUnit.MINUTES);
     }
 
-    this.graphs = builder
-        .maximumSize(maxSize)
-        .build(this.cacheLoader);
+    this.graphs = builder.maximumSize(maxSize).build(this.cacheLoader);
   }
 
   /**
-   * Proxy method for Guava's cache get method
+   * Proxy method for Guava's cache get method.
    *
-   * @return
+   * @return The value from a given key.
    */
   public V get(K key) throws Throwable {
     try {

@@ -1,8 +1,9 @@
-package edu.brown.cs.student.main.server.csvHandlers.loadHandler;
+package edu.brown.cs.student.main.server.csvEndpoints.csvHandlers;
 
 import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
 import edu.brown.cs.student.main.server.HandlerErrorBuilder;
-import edu.brown.cs.student.main.server.datasource.CSVSource;
+import edu.brown.cs.student.main.server.DataSuccessResponse;
+import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,13 +11,26 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/** The handler for loading the CSV. */
 public class CSVLoadHandler implements Route {
   private final CSVSource source;
 
-  public CSVLoadHandler(CSVSource creator) {
-    this.source = creator;
+  /**
+   * The constructor for the CSV load handler.
+   *
+   * @param source The source of the CSV data.
+   */
+  public CSVLoadHandler(CSVSource source) {
+    this.source = source;
   }
 
+  /**
+   * The handler method.
+   *
+   * @param request The requested endpoint.
+   * @param response The JSON response.
+   * @return A JSON response of relevant information after loading the CSV.
+   */
   @Override
   public Object handle(Request request, Response response) {
     String hasHeader = request.queryParams("header");
@@ -59,11 +73,12 @@ public class CSVLoadHandler implements Route {
 
     boolean hasHeaderBool = Boolean.parseBoolean(hasHeader);
 
+    // Send a response on success or failure.
     try {
       this.source.loadData(fileName, hasHeaderBool);
       responseMap.put("file", fileName);
       responseMap.put("header", hasHeader);
-      return new LoadSuccessResponse(responseMap).serialize();
+      return new DataSuccessResponse(responseMap).serialize();
     } catch (IOException e) {
       response.status(500);
       String errorType = "error_datasource";

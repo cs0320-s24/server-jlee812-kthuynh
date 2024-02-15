@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.server.csvHandlers;
+package edu.brown.cs.student.main.server.csvEndpoints;
 
 public class UnloadedCSVException extends Exception {
 

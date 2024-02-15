@@ -1,8 +1,9 @@
-package edu.brown.cs.student.main.server.csvHandlers;
+package edu.brown.cs.student.main.server.csvEndpoints.csvHandlers;
 
 import edu.brown.cs.student.main.server.HandlerErrorBuilder;
-import edu.brown.cs.student.main.server.datasource.CSVSource;
-import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
+import edu.brown.cs.student.main.server.DataSuccessResponse;
+import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
+import edu.brown.cs.student.main.server.csvEndpoints.UnloadedCSVException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
