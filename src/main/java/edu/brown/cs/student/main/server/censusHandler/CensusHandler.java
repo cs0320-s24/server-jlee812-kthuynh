@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.server.censusHandler;
 
 import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.caching.CacheControl;
+import edu.brown.cs.student.main.server.caching.CensusResponseLoader;
 import edu.brown.cs.student.main.server.datasource.DataSuccessResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,18 +12,33 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/** The handler for the census API */
 public class CensusHandler implements Route {
-  private final CacheControl cacher;
+  private final CacheControl<Location, Map<String, Object>> cacher;
 
+  /**
+   * The constructor for the handler.
+   *
+   * @param source The data source for the handler.
+   */
   public CensusHandler(CensusSource source) {
-    this.cacher = new CacheControl(source);
+    this.cacher = new CacheControl<>(new CensusResponseLoader(source), true,
+        500, 5);
   }
 
+  /**
+   * The handling method to send the response.
+   *
+   * @param request The endpoint requested.
+   * @param response The JSON sent as a response.
+   * @return A JSON representing either a success or failure.
+   */
   @Override
   public Object handle(Request request, Response response) {
     String state = request.queryParams("state");
     String county = request.queryParams("county");
 
+    // If the state query was not included, send an error.
     if (state == null) {
       response.status(200);
       String errorType = "error_bad_request";
@@ -33,12 +49,14 @@ public class CensusHandler implements Route {
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     }
 
+    // If no county was given, search for all of them in a given state.
     if (county == null) {
       county = "*";
     }
 
     try {
       Location location = new Location(state, county);
+      // Get the response map from the cache.
       Map<String, Object> responseMap = this.cacher.get(location);
       return new DataSuccessResponse(responseMap).serialize();
     } catch (LocationNotFoundException e) {
@@ -74,7 +92,7 @@ public class CensusHandler implements Route {
       details.put("state", state);
       details.put("county", county);
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
-    } catch (IllegalStateException e) {
+    } catch (Throwable e) {
       response.status(200);
       String errorType = "error_caching";
       String errorMessage = "The data could not be cached";

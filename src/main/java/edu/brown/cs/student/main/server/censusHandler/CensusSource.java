@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/** The source of data for the census, making the API request from the Census API. */
 public class CensusSource {
   private static Map<String, String> stateCodes = new HashMap<>();
   private static final Map<String, Map<String, String>> countyCodes = new HashMap<>();
@@ -64,6 +65,13 @@ public class CensusSource {
     return adapter.fromJson(jsonString);
   }
 
+  /**
+   * A method that gets all the state codes and maps them to their names.
+   *
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   * @throws URISyntaxException Thrown when the link was not valid.
+   * @throws InterruptedException Thrown when the thread for connecting is interrupted.
+   */
   private static void getStateCodes() throws IOException, URISyntaxException, InterruptedException {
     String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=state:*");
     List<List<String>> deserializedStateCodes = getJSONAsList(jsonString);
@@ -76,23 +84,47 @@ public class CensusSource {
     stateCodes = mappedStateCodes;
   }
 
+  /**
+   * Gets the county codes for a given state.
+   *
+   * @param stateCode The state whose counties are being looked through.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   * @throws URISyntaxException Thrown when the link was not valid.
+   * @throws InterruptedException Thrown when the thread for connecting is interrupted.
+   */
   private static void getCountyCodes(String stateCode)
       throws IOException, URISyntaxException, InterruptedException {
-    String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
-    List<List<String>> deserializedCountyCodes = getJSONAsList(jsonString);
+    if (!countyCodes.containsKey(stateCode)) {
+      String jsonString = getJSONString("2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
+      List<List<String>> deserializedCountyCodes = getJSONAsList(jsonString);
 
-    Map<String, String> mappedCountyCodes = new HashMap<>();
-    for (List<String> row : deserializedCountyCodes) {
-      String countyName = row.get(0);
-      if (countyName.lastIndexOf(',') != -1) {
-        countyName = countyName.substring(0, countyName.lastIndexOf(',')).toLowerCase();
+      Map<String, String> mappedCountyCodes = new HashMap<>();
+
+      for (int i = 1; i < deserializedCountyCodes.size(); i++) {
+        List<String> row = deserializedCountyCodes.get(i);
+
+        String countyName = row.get(0);
+        // Parse the ",[STATE]" out of a county's name for searching purposes.
+        if (countyName.lastIndexOf(',') != -1) {
+          countyName = countyName.substring(0, countyName.lastIndexOf(',')).toLowerCase();
+        }
+        mappedCountyCodes.put(countyName, row.get(2));
       }
-      mappedCountyCodes.put(countyName, row.get(2));
-    }
 
-    countyCodes.put(stateCode, mappedCountyCodes);
+      countyCodes.put(stateCode, mappedCountyCodes);
+    }
   }
 
+  /**
+   * Gets the specific state code given its name.
+   *
+   * @param state The name of the state.
+   * @return The code of the state.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   * @throws URISyntaxException Thrown when the link was not valid.
+   * @throws InterruptedException Thrown when the thread for connecting is interrupted.
+   * @throws LocationNotFoundException Thrown when the location does not exist.
+   */
   private static String getStateCode(String state)
       throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
     if (stateCodes.isEmpty()) {
@@ -106,24 +138,62 @@ public class CensusSource {
     }
   }
 
+  /**
+   * Gets the specific county code given its name and state code.
+   *
+   * @param encodedState The state code.
+   * @param countyName The name of the county.
+   * @return A string representing the county's code.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   * @throws URISyntaxException Thrown when the link was not valid.
+   * @throws InterruptedException Thrown when the thread for connecting is interrupted.
+   * @throws LocationNotFoundException Thrown when the location does not exist.
+   */
+  private static String getCountyCode(String encodedState, String countyName)
+      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
+    if (!countyName.equalsIgnoreCase("*")) {
+      // Calls for the county codes of the state if needed.
+      getCountyCodes(encodedState);
+      if (countyCodes.get(encodedState).containsKey(countyName)) {
+        return countyCodes.get(encodedState).get(countyName.toLowerCase());
+      } else {
+        throw new LocationNotFoundException("County not found: " + countyName, "county");
+      }
+    } else {
+      return "*";
+    }
+  }
+
+  /**
+   * The public method that the handler calls to get broadband results.
+   *
+   * @param location The location whose broadband usage is being list for.
+   * @return A list of the census results.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   * @throws URISyntaxException Thrown when the link was not valid.
+   * @throws InterruptedException Thrown when the thread for connecting is interrupted.
+   * @throws LocationNotFoundException Thrown when the location does not exist.
+   */
   public List<CensusResult> getBroadband(Location location)
       throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
     return getBroadband(location.state(), location.county());
   }
 
+  /**
+   * The private helper method that is used to assemble the broadband results.
+   *
+   * @param state The name of the state being looked for.
+   * @param county The name of the county being looked for.
+   * @return A list of census results.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   * @throws URISyntaxException Thrown when the link was not valid.
+   * @throws InterruptedException Thrown when the thread for connecting is interrupted.
+   * @throws LocationNotFoundException Thrown when the location does not exist.
+   */
   private static List<CensusResult> getBroadband(String state, String county)
       throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
     String encodedState = getStateCode(state);
-    String encodedCounty = county;
-
-    if (!county.equalsIgnoreCase("*")) {
-      getCountyCodes(encodedState);
-      if (countyCodes.get(encodedState).containsKey(county)) {
-        encodedCounty = countyCodes.get(encodedState).get(county.toLowerCase());
-      } else {
-        throw new LocationNotFoundException("County not found: " + county, "county");
-      }
-    }
+    String encodedCounty = getCountyCode(encodedState, county);
 
     EncodedLocation encodedLocation = new EncodedLocation(encodedState, encodedCounty);
     String jsonString =
