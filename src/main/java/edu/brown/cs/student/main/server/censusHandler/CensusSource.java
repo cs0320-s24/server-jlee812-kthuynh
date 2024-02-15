@@ -32,7 +32,11 @@ public class CensusSource {
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest buildCensusApiRequest =
         HttpRequest.newBuilder()
-            .uri(new URI("https://api.census.gov/data/" + endpoint))
+            .uri(
+                new URI(
+                    "https://api.census.gov/data/"
+                        + endpoint
+                        + "&key=c6d7135a126db9f0a28349d8dad7db58683db5c8"))
             .GET()
             .build();
 
@@ -102,7 +106,8 @@ public class CensusSource {
     }
   }
 
-  public List<CensusResult> getBroadband(Location location) throws Exception {
+  public List<CensusResult> getBroadband(Location location)
+      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException {
     return getBroadband(location.state(), location.county());
   }
 

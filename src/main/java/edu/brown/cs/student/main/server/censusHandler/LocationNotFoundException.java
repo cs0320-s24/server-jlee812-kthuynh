@@ -1,7 +1,7 @@
 package edu.brown.cs.student.main.server.censusHandler;
 
 public class LocationNotFoundException extends Exception {
-  private String locationType;
+  private final String locationType;
 
   public LocationNotFoundException(String message, String location) {
     super(message);
