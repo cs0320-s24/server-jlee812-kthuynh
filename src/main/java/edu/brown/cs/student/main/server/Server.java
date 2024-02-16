@@ -41,5 +41,11 @@ public class Server {
     Spark.awaitInitialization();
 
     System.out.println("Server started at http://localhost:" + port);
+    System.out.println(
+        "USAGE:\n"
+            + "-'/loadcsv': filePath=<The csv file to load>, header=<true/false>\n"
+            + "-'/viewcsv'\n"
+            + "-'/searchcsv': value=<The value being searched for>, (OPTIONAL) column=<The column being narrowed by>\n"
+            + "-'/broadcast': state=<The state being looked for>, (OPTIONAL) county=<The county being looked for>");
   }
 }
