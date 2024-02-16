@@ -12,13 +12,27 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * The handler for viewing the CSV.
+ */
 public class CSVViewHandler implements Route {
   private final CSVSource source;
 
+  /**
+   * The constructor for the CSV view handler.
+   * @param source The data source for the CSV.
+   */
   public CSVViewHandler(CSVSource source) {
     this.source = source;
   }
 
+  /**
+   * The handler method.
+   *
+   * @param request The requested endpoint.
+   * @param response The JSON response.
+   * @return A JSON response of relevant information after viewing the CSV.
+   */
   @Override
   public Object handle(Request request, Response response) {
     Map<String, Object> responseMap = new HashMap<>();

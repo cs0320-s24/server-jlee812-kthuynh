@@ -10,6 +10,9 @@ import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVLoadHandler;
 import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
 import spark.Spark;
 
+/**
+ * The server for getting API requests.
+ */
 public class Server {
   public static void main(String[] args) {
     CSVSource creator = new CSVSource();
@@ -24,9 +27,7 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
-    // Setting up the handler for the GET /order and /activity endpoints
-    // Spark.get("order", new OrderHandler(menu));
-    // Spark.get("activity", new ActivityHandler());
+    // Setting up the handler for the csv and census endpoints.
     Spark.get("loadcsv", new CSVLoadHandler(creator));
     Spark.get("viewcsv", new CSVViewHandler(creator));
     Spark.get("searchcsv", new CSVSearchHandler(creator));

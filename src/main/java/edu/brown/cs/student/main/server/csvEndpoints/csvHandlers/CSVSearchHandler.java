@@ -27,18 +27,11 @@ public class CSVSearchHandler implements Route {
   }
 
   /**
-   * The handling method.
-   * @param request
-   * @param response
-   * @return
-   * @throws Exception
-   */
-  /**
    * The handler method.
    *
    * @param request The requested endpoint.
    * @param response The JSON response.
-   * @return A JSON response of relevant information after loading the CSV.
+   * @return A JSON response of relevant information after searching the CSV.
    */
   @Override
   public Object handle(Request request, Response response) {
