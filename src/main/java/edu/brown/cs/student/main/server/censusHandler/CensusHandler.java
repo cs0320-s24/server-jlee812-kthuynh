@@ -21,7 +21,7 @@ public class CensusHandler implements Route {
    *
    * @param source The data source for the handler.
    */
-  public CensusHandler(CensusSource source) {
+  public CensusHandler(CensusSourceInterface source) {
     this.cacher = new CacheControl<>(new CensusResponseLoader(source), true, 500, 5);
   }
 

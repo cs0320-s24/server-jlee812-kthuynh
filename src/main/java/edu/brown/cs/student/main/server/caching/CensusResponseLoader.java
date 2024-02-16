@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.server.caching;
 
 import com.google.common.cache.CacheLoader;
 import edu.brown.cs.student.main.server.censusHandler.CensusSource;
+import edu.brown.cs.student.main.server.censusHandler.CensusSourceInterface;
 import edu.brown.cs.student.main.server.censusHandler.Location;
 import edu.brown.cs.student.main.server.censusHandler.LocationNotFoundException;
 import java.io.IOException;
@@ -14,9 +15,9 @@ import java.util.Map;
 
 /** A cache loader for the response of the census. */
 public class CensusResponseLoader extends CacheLoader<Location, Map<String, Object>> {
-  private final CensusSource source;
+  private final CensusSourceInterface source;
 
-  public CensusResponseLoader(CensusSource source) {
+  public CensusResponseLoader(CensusSourceInterface source) {
     this.source = source;
   }
 
