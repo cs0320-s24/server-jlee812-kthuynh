@@ -31,6 +31,10 @@ import org.testng.Assert;
 import spark.Spark;
 
 public class CSVHandlersTest {
+
+  /**
+   * Sets up the port
+   */
   @BeforeAll
   public static void setup_before_everything() {
     Spark.port(0);
@@ -39,6 +43,9 @@ public class CSVHandlersTest {
 
   private CSVSource creator;
 
+  /**
+   * Sets up the listeners for the server
+   */
   @BeforeEach
   public void setup() {
     // Re-initialize state, etc. for _every_ test method run
@@ -51,6 +58,9 @@ public class CSVHandlersTest {
     Spark.awaitInitialization(); // don't continue until the server is listening
   }
 
+  /**
+   * Closes the listeners of the server
+   */
   @AfterEach
   public void teardown() {
     this.creator.setIsLoaded();
@@ -168,6 +178,10 @@ public class CSVHandlersTest {
     return clientConnection;
   }
 
+  /**
+   * Tests loading when there's no file
+   * @throws IOException
+   */
   @Test
   public void testLoadHandlerNoFile() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv");
@@ -188,6 +202,10 @@ public class CSVHandlersTest {
     clientConnection.disconnect();
   }
 
+  /**
+   * Tests search handling when no value/column args
+   * @throws IOException
+   */
   @Test
   public void testSearchHandlerNoValueAndColumn() throws IOException {
     HttpURLConnection clientConnection = tryRequest("searchcsv");
@@ -208,6 +226,10 @@ public class CSVHandlersTest {
     clientConnection.disconnect();
   }
 
+  /**
+   * Tests view when there's no file given
+   * @throws IOException
+   */
   @Test
   public void testViewHandlerNoFile() throws IOException {
     HttpURLConnection clientConnection = tryRequest("viewcsv");
@@ -228,6 +250,38 @@ public class CSVHandlersTest {
     clientConnection.disconnect();
   }
 
+  /**
+   * Tests a valid view handler connection
+   * @throws IOException
+   */
+  @Test
+  public void testViewHandlerValid() throws IOException {
+    HttpURLConnection clientConnection =
+        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_earnings_disparity.csv");
+    HttpURLConnection clientConnection2 = tryRequest("viewcsv");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(200, clientConnection2.getResponseCode());
+
+    // Now we need to see whether we've got the expected Json response.
+    Moshi moshi = new Moshi.Builder().build();
+    ErrorResponse response =
+        moshi
+            .adapter(ErrorResponse.class)
+            .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+
+    System.out.println(response);
+    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception, but
+    // a real Json reply.
+
+    clientConnection.disconnect();
+    clientConnection2.disconnect();
+  }
+
+  /**
+   * Tests valid load
+   * @throws IOException
+   */
   @Test
   public void testLoadValidFile() throws IOException {
     HttpURLConnection clientConnection =
@@ -256,6 +310,10 @@ public class CSVHandlersTest {
     clientConnection.disconnect();
   }
 
+  /**
+   * Tests loading 2 files works
+   * @throws IOException
+   */
   @Test
   public void testLoadTwice() throws IOException {
     HttpURLConnection clientConnection1 =
@@ -287,6 +345,11 @@ public class CSVHandlersTest {
     clientConnection1.disconnect();
   }
 
+  /**
+   * Tests search works for a valid col
+   * @throws IOException
+   * @throws FactoryFailureException
+   */
   @Test
   public void testSearchValidCol() throws IOException, FactoryFailureException {
     HttpURLConnection clientConnection =
@@ -319,6 +382,11 @@ public class CSVHandlersTest {
     clientConnection2.disconnect();
   }
 
+  /**
+   * Tests search is valid when header is false
+   * @throws IOException
+   * @throws FactoryFailureException
+   */
   @Test
   public void testSearchValidColNoHeader() throws IOException, FactoryFailureException {
     HttpURLConnection clientConnection =
