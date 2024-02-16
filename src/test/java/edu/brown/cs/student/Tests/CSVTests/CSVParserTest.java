@@ -1,8 +1,8 @@
-package edu.brown.cs.student.Tests;
+package edu.brown.cs.student.Tests.CSVTests;
 
-import edu.brown.cs.student.Tests.creatorfromrowclasses.IntegerListFromRow;
-import edu.brown.cs.student.Tests.creatorfromrowclasses.Person;
-import edu.brown.cs.student.Tests.creatorfromrowclasses.PersonFromRow;
+import edu.brown.cs.student.Tests.CSVTests.creatorfromrowclasses.IntegerListFromRow;
+import edu.brown.cs.student.Tests.CSVTests.creatorfromrowclasses.Person;
+import edu.brown.cs.student.Tests.CSVTests.creatorfromrowclasses.PersonFromRow;
 import edu.brown.cs.student.main.csv.parser.CSVParser;
 import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
 import edu.brown.cs.student.main.csv.search.StringListFromRow;

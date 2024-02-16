@@ -1,4 +1,4 @@
-package edu.brown.cs.student.Tests.creatorfromrowclasses;
+package edu.brown.cs.student.Tests.CSVTests.creatorfromrowclasses;
 
 public class Person {
   private String name;

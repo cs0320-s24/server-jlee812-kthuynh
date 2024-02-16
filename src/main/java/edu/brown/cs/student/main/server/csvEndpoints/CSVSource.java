@@ -58,13 +58,12 @@ public class CSVSource {
   /**
    * Gets the header of the CSV.
    * @return A list of strings representing each header value.
-   * @throws UnloadedCSVException Thrown when the CSV has not been loaded.
    */
-  public List<String> getHeader() throws UnloadedCSVException {
+  public List<String> getHeader() {
     if (this.isLoaded) {
       return new ArrayList<>(this.header);
     } else {
-      throw new UnloadedCSVException("Viewing requires a loaded CSV!");
+      return new ArrayList<>();
     }
   }
 

@@ -6,10 +6,10 @@ import java.util.Map;
 
 /**
  * A record representing a successful response.
- * @param response_type The type of response.
+ * @param result The type of response.
  * @param responseMap The response map.
  */
-public record DataSuccessResponse(String response_type, Map<String, Object> responseMap) {
+public record DataSuccessResponse(String result, Map<String, Object> responseMap) {
 
   /**
    * The constructor for the response.

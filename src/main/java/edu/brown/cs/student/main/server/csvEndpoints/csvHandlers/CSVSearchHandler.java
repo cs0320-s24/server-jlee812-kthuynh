@@ -70,6 +70,7 @@ public class CSVSearchHandler implements Route {
       Map<String, String> details = new HashMap<>();
       details.put("column", column);
       details.put("error_arg", "column");
+      details.put("valid_columns", this.source.getHeader().toString());
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     }
   }

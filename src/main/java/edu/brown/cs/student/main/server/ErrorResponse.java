@@ -6,10 +6,10 @@ import java.util.Map;
 
 /**
  * A record representing an unsuccessful response.
- * @param response_type The type of response.
+ * @param result The type of response.
  * @param responseMap The response map.
  */
-public record ErrorResponse(String response_type, Map<String, Object> responseMap) {
+public record ErrorResponse(String result, Map<String, Object> responseMap) {
 
   /**
    * The constructor for the response.

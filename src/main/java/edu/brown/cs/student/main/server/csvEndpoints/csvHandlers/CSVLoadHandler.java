@@ -34,7 +34,7 @@ public class CSVLoadHandler implements Route {
   @Override
   public Object handle(Request request, Response response) {
     String hasHeader = request.queryParams("header");
-    String fileName = request.queryParams("file");
+    String fileName = request.queryParams("filePath");
     Map<String, Object> responseMap = new HashMap<>();
 
     // If there are missing parameters.
@@ -44,8 +44,8 @@ public class CSVLoadHandler implements Route {
       String errorMessage = "The endpoint loadcsv is missing required queries";
       Map<String, String> details = new HashMap<>();
       details.put("header", hasHeader);
-      details.put("file", fileName);
-      details.put("error_arg", fileName == null ? "file" : "header");
+      details.put("filePath", fileName);
+      details.put("error_arg", fileName == null ? "filePath" : "header");
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     }
 
@@ -55,8 +55,8 @@ public class CSVLoadHandler implements Route {
       String errorType = "error_bad_request";
       String errorMessage = "File must be in data folder";
       Map<String, String> details = new HashMap<>();
-      details.put("error_arg", "file");
-      details.put("file", fileName);
+      details.put("error_arg", "filePath");
+      details.put("filePath", fileName);
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     }
 
@@ -76,7 +76,7 @@ public class CSVLoadHandler implements Route {
     // Send a response on success or failure.
     try {
       this.source.loadData(fileName, hasHeaderBool);
-      responseMap.put("file", fileName);
+      responseMap.put("filePath", fileName);
       responseMap.put("header", hasHeader);
       return new DataSuccessResponse(responseMap).serialize();
     } catch (IOException e) {
@@ -84,8 +84,8 @@ public class CSVLoadHandler implements Route {
       String errorType = "error_datasource";
       String errorMessage = e.getMessage();
       Map<String, String> details = new HashMap<>();
-      details.put("error_arg", "file");
-      details.put("file", fileName);
+      details.put("error_arg", "filePath");
+      details.put("filePath", fileName);
       return new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
     } catch (FactoryFailureException e) {
       String errorType = "error_malformed_csv";

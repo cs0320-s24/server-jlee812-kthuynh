@@ -1,4 +1,4 @@
-package edu.brown.cs.student.Tests;
+package edu.brown.cs.student.Tests.CSVTests;
 
 import edu.brown.cs.student.main.csv.parser.CSVParser;
 import edu.brown.cs.student.main.csv.parser.FactoryFailureException;

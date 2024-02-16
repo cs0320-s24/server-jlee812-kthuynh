@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 public class CSVParser<T> {
 
   // Private variable declarations.
-  private BufferedReader bufferedReader;
-  private CreatorFromRow<T> creatorFromRow;
-  private List<String> header;
+  private final BufferedReader bufferedReader;
+  private final CreatorFromRow<T> creatorFromRow;
+  private final List<String> header;
 
   // The regex for splitting up rows.
   private static final Pattern regexSplitCSVRow =
@@ -86,7 +86,7 @@ public class CSVParser<T> {
     }
 
     // Returns the result.
-    return stores;
+    return new ArrayList<>(stores);
   }
 
   /**
@@ -95,7 +95,7 @@ public class CSVParser<T> {
    * @return A string array containing the values of the header.
    */
   public List<String> getHeader() {
-    return this.header;
+    return new ArrayList<>(this.header);
   }
 
   /**

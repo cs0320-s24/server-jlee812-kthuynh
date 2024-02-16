@@ -1,4 +1,4 @@
-package edu.brown.cs.student.Tests;
+package edu.brown.cs.student.Tests.CSVTests;
 
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;

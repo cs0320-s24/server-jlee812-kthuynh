@@ -7,20 +7,16 @@ import java.util.List;
 
 /** A searcher for the CSV */
 public class CSVSearcher {
-  private List<List<String>> data;
-  private List<String> header;
+  private final List<List<String>> data;
+  private final List<String> header;
 
   /**
    * The constructor for the CSV Searcher
    *
-   * @param header
-   * @param data
-   * @throws IOException Throws an IOException if something goes wrong reading the file.
-   * @throws FactoryFailureException Throws a FactoryFailureException if there is trouble processing
-   *     data
+   * @param header The header of the CSV.
+   * @param data The data of the CSV.
    */
-  public CSVSearcher(List<String> header, List<List<String>> data)
-      throws IOException, FactoryFailureException {
+  public CSVSearcher(List<String> header, List<List<String>> data) {
     this.header = header;
     this.data = data;
   }
@@ -47,7 +43,7 @@ public class CSVSearcher {
       }
     }
 
-    return result;
+    return new ArrayList<>(result);
   }
 
   /**

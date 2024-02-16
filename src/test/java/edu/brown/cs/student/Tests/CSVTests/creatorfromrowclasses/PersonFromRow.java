@@ -1,4 +1,4 @@
-package edu.brown.cs.student.Tests.creatorfromrowclasses;
+package edu.brown.cs.student.Tests.CSVTests.creatorfromrowclasses;
 
 import edu.brown.cs.student.main.csv.parser.CreatorFromRow;
 import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
