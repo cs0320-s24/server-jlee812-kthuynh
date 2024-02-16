@@ -8,10 +8,13 @@ public class StringListFromRow implements CreatorFromRow<List<String>> {
 
   @Override
   public List<String> create(List<String> row) throws FactoryFailureException {
-    for (String value : row) {
-      if (value.length() == 0) {
+    for (int i = 0; i < row.size(); i++) {
+
+      if (row.get(i).length() == 0) {
         throw new FactoryFailureException("Missing column value in row : " + row, row);
       }
+
+      row.set(i, row.get(i).replaceAll("\"", ""));
     }
 
     return row;

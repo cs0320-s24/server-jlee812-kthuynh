@@ -21,7 +21,7 @@ public class CSVSearcherTest {
   public void testSearchValueInCSV()
       throws IOException, FactoryFailureException, HeaderValueException {
     FileReader fileReader = new FileReader("data/tests/withHeader.csv");
-    CSVParser csvParser = new CSVParser<>(fileReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser = new CSVParser<>(fileReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
@@ -41,7 +41,8 @@ public class CSVSearcherTest {
   public void testSearchValueHasSpacesInCSV()
       throws IOException, FactoryFailureException, HeaderValueException {
     StringReader stringReader = new StringReader("Num1,Num2,Num3\n" + "Number 1,2,3\n" + "4,1,6");
-    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser =
+        new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
@@ -61,18 +62,21 @@ public class CSVSearcherTest {
   public void testSearchValueHasCommasInCSV()
       throws IOException, FactoryFailureException, HeaderValueException {
     StringReader stringReader = new StringReader("Num1,Num2,Num3\n" + "\"1,4\",2,3\n" + "4,1,6");
-    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser =
+        new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
-    List<List<String>> result = csvSearcher.search("\"1,4\"", null);
+    List<List<String>> result = csvSearcher.search("1,4", null);
 
     List<List<String>> expectedResult = new ArrayList<>();
     expectedResult.add(new ArrayList<>());
-    expectedResult.get(0).add("\"1,4\"");
+    expectedResult.get(0).add("1,4");
     expectedResult.get(0).add("2");
     expectedResult.get(0).add("3");
 
+    System.out.println(expectedResult);
+    System.out.println(result);
     Assert.assertEquals(result, expectedResult);
   }
 
@@ -81,7 +85,7 @@ public class CSVSearcherTest {
   public void testSearchValueNotInCSV()
       throws IOException, FactoryFailureException, HeaderValueException {
     FileReader fileReader = new FileReader("data/tests/withHeader.csv");
-    CSVParser csvParser = new CSVParser<>(fileReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser = new CSVParser<>(fileReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
@@ -96,7 +100,8 @@ public class CSVSearcherTest {
   public void testSearchValueInCSVWrongColumnBy()
       throws IOException, FactoryFailureException, HeaderValueException {
     StringReader stringReader = new StringReader("Num1,Num2,Num3\n" + "1,2,3\n" + "4,1,6");
-    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser =
+        new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
@@ -117,7 +122,8 @@ public class CSVSearcherTest {
   public void testSearchValueInCSVByColumnIndex()
       throws IOException, FactoryFailureException, HeaderValueException {
     StringReader stringReader = new StringReader("Num1,Num2,Num3\n" + "1,2,3\n" + "4,1,6");
-    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser =
+        new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
@@ -141,7 +147,8 @@ public class CSVSearcherTest {
   public void testSearchValueInCSVByColumnNotInHeader()
       throws IOException, FactoryFailureException, HeaderValueException {
     StringReader stringReader = new StringReader("Num1,Num2,Num3\n" + "1,2,3\n" + "4,1,6");
-    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser =
+        new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
@@ -154,7 +161,8 @@ public class CSVSearcherTest {
   public void testSearchValueInCSVNoColumnNarrow()
       throws IOException, FactoryFailureException, HeaderValueException {
     StringReader stringReader = new StringReader("Num1,Num2,Num3\n" + "1,2,3\n" + "4,1,6");
-    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser =
+        new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
@@ -182,7 +190,8 @@ public class CSVSearcherTest {
   public void testSearchValueInCSVColumnExceedsRowLength()
       throws IOException, FactoryFailureException {
     StringReader stringReader = new StringReader("Num1,Num2,Num3\n" + "1,2,3\n" + "4,1,6");
-    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser =
+        new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
@@ -195,7 +204,8 @@ public class CSVSearcherTest {
   public void testSearchValueInCSVNotRightColumn()
       throws IOException, FactoryFailureException, HeaderValueException {
     StringReader stringReader = new StringReader("Num1,Num2,Num3\n" + "1,2,3\n" + "4,5,6");
-    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), true);
+    CSVParser<List<String>> csvParser =
+        new CSVParser<>(stringReader, new StringListFromRow(), true);
     List<List<String>> data = csvParser.parseCSV();
     List<String> header = csvParser.getHeader();
     CSVSearcher csvSearcher = new CSVSearcher(header, data);
