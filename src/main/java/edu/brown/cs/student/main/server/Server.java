@@ -4,15 +4,13 @@ import static spark.Spark.after;
 
 import edu.brown.cs.student.main.server.censusHandler.CensusHandler;
 import edu.brown.cs.student.main.server.censusHandler.CensusSource;
+import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
+import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVLoadHandler;
 import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVSearchHandler;
 import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVViewHandler;
-import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVLoadHandler;
-import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
 import spark.Spark;
 
-/**
- * The server for getting API requests.
- */
+/** The server for getting API requests. */
 public class Server {
   public static void main(String[] args) {
     CSVSource creator = new CSVSource();

@@ -1,7 +1,5 @@
 package edu.brown.cs.student.main.csv.search;
 
-import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

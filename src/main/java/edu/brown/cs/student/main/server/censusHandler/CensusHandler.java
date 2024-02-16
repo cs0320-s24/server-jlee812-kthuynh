@@ -1,9 +1,9 @@
 package edu.brown.cs.student.main.server.censusHandler;
 
+import edu.brown.cs.student.main.server.DataSuccessResponse;
 import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.caching.CacheControl;
 import edu.brown.cs.student.main.server.caching.CensusResponseLoader;
-import edu.brown.cs.student.main.server.DataSuccessResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;

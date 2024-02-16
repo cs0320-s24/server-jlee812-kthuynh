@@ -1,8 +1,8 @@
 package edu.brown.cs.student.main.server.csvEndpoints.csvHandlers;
 
 import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
-import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.DataSuccessResponse;
+import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
 import java.io.IOException;
 import java.util.HashMap;

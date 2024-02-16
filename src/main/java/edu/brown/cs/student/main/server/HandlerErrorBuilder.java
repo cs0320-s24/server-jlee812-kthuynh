@@ -3,9 +3,7 @@ package edu.brown.cs.student.main.server;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A class that creates the error response.
- */
+/** A class that creates the error response. */
 public class HandlerErrorBuilder {
   private final String errorType;
   private final String errorMessage;
@@ -13,6 +11,7 @@ public class HandlerErrorBuilder {
 
   /**
    * The constructor for the error builder.
+   *
    * @param errorType The type of error.
    * @param errorMessage The message of the error.
    * @param details Relevant details for the error.
@@ -25,6 +24,7 @@ public class HandlerErrorBuilder {
 
   /**
    * A method that serializes the response into a JSON.
+   *
    * @return The response as a JSON.
    */
   public String serialize() {

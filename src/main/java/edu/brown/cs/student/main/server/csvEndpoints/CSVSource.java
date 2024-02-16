@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The data source that CSV handlers use.
- */
+/** The data source that CSV handlers use. */
 public class CSVSource {
   private CSVSearcher searcher;
   private List<String> header;
@@ -21,11 +19,12 @@ public class CSVSource {
 
   /**
    * Loads the CSV, parsing through it and assigning relevant variables.
+   *
    * @param fileName The file being parsed.
    * @param hasHeader Whether the CSV file has a header.
    * @throws IOException Thrown when there is an error reading the file.
-   * @throws FactoryFailureException Thrown when there is an error creating an object
-   * from the CSV rows.
+   * @throws FactoryFailureException Thrown when there is an error creating an object from the CSV
+   *     rows.
    */
   public void loadData(String fileName, boolean hasHeader)
       throws IOException, FactoryFailureException {
@@ -39,11 +38,12 @@ public class CSVSource {
 
   /**
    * Searches the CSV.
+   *
    * @param value The value being searched for.
    * @param columnValue The column value being narrowed by.
    * @return A list of rows which contain the value.
-   * @throws HeaderValueException Thrown when the header value being searched does not exist
-   * in the header.
+   * @throws HeaderValueException Thrown when the header value being searched does not exist in the
+   *     header.
    * @throws UnloadedCSVException Thrown when the CSV has not loaded.
    */
   public List<List<String>> search(String value, String columnValue)
@@ -57,6 +57,7 @@ public class CSVSource {
 
   /**
    * Gets the header of the CSV.
+   *
    * @return A list of strings representing each header value.
    */
   public List<String> getHeader() {
@@ -69,6 +70,7 @@ public class CSVSource {
 
   /**
    * Gets the data of the CSV.
+   *
    * @return A list of a list of strings representing the rows.
    * @throws UnloadedCSVException Thrown when the CSV has not been loaded.
    */
@@ -80,9 +82,7 @@ public class CSVSource {
     }
   }
 
-  /**
-   * Setter method for testing handlers when there's no file, To reset CSV variables
-   */
+  /** Setter method for testing handlers when there's no file, To reset CSV variables */
   public void setIsLoaded() {
     this.isLoaded = false;
   }

@@ -1,8 +1,8 @@
 package edu.brown.cs.student.main.server.csvEndpoints.csvHandlers;
 
 import edu.brown.cs.student.main.csv.search.HeaderValueException;
-import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.DataSuccessResponse;
+import edu.brown.cs.student.main.server.HandlerErrorBuilder;
 import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
 import edu.brown.cs.student.main.server.csvEndpoints.UnloadedCSVException;
 import java.util.HashMap;
@@ -11,15 +11,14 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/**
- * A handler for searching the CSV.
- */
+/** A handler for searching the CSV. */
 public class CSVSearchHandler implements Route {
 
   private final CSVSource source;
 
   /**
    * The constructor for the CSV search handler.
+   *
    * @param source The CSV datasource.
    */
   public CSVSearchHandler(CSVSource source) {

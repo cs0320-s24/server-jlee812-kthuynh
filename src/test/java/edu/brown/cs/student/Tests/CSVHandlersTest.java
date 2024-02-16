@@ -3,15 +3,23 @@ package edu.brown.cs.student.Tests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.squareup.moshi.Moshi;
+import edu.brown.cs.student.main.csv.parser.CSVParser;
+import edu.brown.cs.student.main.csv.parser.FactoryFailureException;
+import edu.brown.cs.student.main.csv.search.StringListFromRow;
+import edu.brown.cs.student.main.server.DataSuccessResponse;
 import edu.brown.cs.student.main.server.ErrorResponse;
+import edu.brown.cs.student.main.server.HandlerErrorBuilder;
+import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
+import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVLoadHandler;
 import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVSearchHandler;
 import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVViewHandler;
-import edu.brown.cs.student.main.server.csvEndpoints.csvHandlers.CSVLoadHandler;
-import edu.brown.cs.student.main.server.csvEndpoints.CSVSource;
-import edu.brown.cs.student.main.server.DataSuccessResponse;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import okio.Buffer;
@@ -19,6 +27,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testng.Assert;
 import spark.Spark;
 
 public class CSVHandlersTest {
@@ -92,7 +101,7 @@ public class CSVHandlersTest {
                 + apiCall
                 + "?header="
                 + header
-                + "&file="
+                + "&filePath="
                 + file);
     HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
 
@@ -222,26 +231,33 @@ public class CSVHandlersTest {
   @Test
   public void testLoadValidFile() throws IOException {
     HttpURLConnection clientConnection =
-        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_" + "earnings_disparity.csv");
-    // Get an OK response (the *connection* worked, the *API* provides an error response)
+        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_earnings_disparity.csv");
+    // Get an OK response (the *connection* worked, the *API* provides a success response)
     assertEquals(200, clientConnection.getResponseCode());
 
     // Now we need to see whether we've got the expected Json response.
     Moshi moshi = new Moshi.Builder().build();
-    ErrorResponse response =
+    DataSuccessResponse response =
         moshi
-            .adapter(ErrorResponse.class)
+            .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
 
     System.out.println(response);
     // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception, but
     // a real Json reply.
 
+    HashMap<String, Object> responseMap = new HashMap<>();
+    responseMap.put("filePath", "data/census/dol_ri_earnings_disparity.csv");
+    responseMap.put("header", "true");
+    String expectedResponse = new DataSuccessResponse(responseMap).serialize();
+
+    Assert.assertEquals(expectedResponse, response.serialize());
+
     clientConnection.disconnect();
   }
 
   @Test
-  public void testSearchValidCol() throws IOException {
+  public void testSearchValidCol() throws IOException, FactoryFailureException {
     HttpURLConnection clientConnection =
         tryLoadRequest("loadcsv", "true", "data/census/dol_ri_" + "earnings_disparity.csv");
     // Get an OK response (the *connection* worked, the *API* provides an error response)
@@ -255,34 +271,46 @@ public class CSVHandlersTest {
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected =
-        "DataSuccessResponse[response_type=success,responseMap=[[RI,White,\"$1,058.47\",395773.6521,$1.00,75%]]]";
 
-    // assertEquals(
-    // response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
+    // Create the expected response.
+    Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("column", "1");
+    responseMap.put("value", "white");
+    StringReader stringReader =
+        new StringReader("RI,White,\" $1,058.47 \",395773.6521, $1.00 ,75%");
+    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), false);
+    responseMap.put("results", csvParser.parseCSV());
+    String expectedResponse = new DataSuccessResponse(responseMap).serialize();
+
+    assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
   }
 
   @Test
-  public void testSearchValidColNoHeader() throws IOException {
+  public void testSearchValidColNoHeader() throws IOException, FactoryFailureException {
     HttpURLConnection clientConnection =
         tryLoadRequest("loadcsv", "false", "data/census/ri_income_us_census_2021.csv");
     assertEquals(200, clientConnection.getResponseCode());
 
-    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv", "CRANSTON", "");
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv", "CRANSTON");
     assertEquals(200, clientConnection2.getResponseCode());
     Moshi moshi = new Moshi.Builder().build();
     DataSuccessResponse response =
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected =
-        "DataSuccessResponse[response_type=success,responseMap={column=,value=CRANSTON"
-            + ",results=[[Cranston,\"77,145.00\",\"95,763.00\",\"38,269.00\"]]}]";
 
-    assertEquals(
-        response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
+    Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("column", null);
+    responseMap.put("value", "CRANSTON");
+    StringReader stringReader =
+        new StringReader("Cranston,\"77,145.00\",\"95,763.00\",\"38,269.00\"");
+    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), false);
+    responseMap.put("results", csvParser.parseCSV());
+    String expectedResponse = new DataSuccessResponse(responseMap).serialize();
+
+    assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
   }
@@ -299,19 +327,54 @@ public class CSVHandlersTest {
         tryLoadRequest("loadcsv", "false", "data/census/ri_income_us_census_2021.csv");
     assertEquals(200, clientConnection.getResponseCode());
 
-    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv", "hi", "lol");
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv", "hi");
     assertEquals(200, clientConnection2.getResponseCode());
     Moshi moshi = new Moshi.Builder().build();
     DataSuccessResponse response =
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected =
-        "DataSuccessResponse[response_type=success,responseMap={column=lol,value=hi,"
-            + "results=[]}]";
 
-    assertEquals(
-        response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
+    Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("value", "hi");
+    responseMap.put("results", new ArrayList<>());
+    String expectedResponse = new DataSuccessResponse(responseMap).serialize();
+
+    assertEquals(expectedResponse, response.serialize());
+
+    clientConnection.disconnect();
+  }
+
+  /**
+   * Tests when a search request includes an invalid header.
+   *
+   * @throws IOException
+   */
+  @Test
+  public void testSearchBadHeader() throws IOException {
+    HttpURLConnection clientConnection =
+        tryLoadRequest("loadcsv", "true", "data/census/ri_income_us_census_2021.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv", "hi", "no");
+    assertEquals(200, clientConnection2.getResponseCode());
+    Moshi moshi = new Moshi.Builder().build();
+    ErrorResponse response =
+        moshi
+            .adapter(ErrorResponse.class)
+            .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
+
+    String errorType = "error_bad_header_value";
+    String errorMessage = "no not found in header!";
+    Map<String, String> details = new HashMap<>();
+    details.put("column", "no");
+    details.put("error_arg", "column");
+    details.put(
+        "valid_columns",
+        "[City/Town, Median Household Income, Median Family Income, Per Capita Income]");
+    String expectedResponse = new HandlerErrorBuilder(errorType, errorMessage, details).serialize();
+
+    assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
   }
@@ -322,7 +385,7 @@ public class CSVHandlersTest {
    * @throws IOException
    */
   @Test
-  public void testSearchMultipleCols() throws IOException {
+  public void testSearchMultipleCols() throws IOException, FactoryFailureException {
     HttpURLConnection clientConnection =
         tryLoadRequest("loadcsv", "true", "data/census/dol_ri_earnings_disparity2.csv");
     assertEquals(200, clientConnection.getResponseCode());
@@ -334,13 +397,18 @@ public class CSVHandlersTest {
         moshi
             .adapter(DataSuccessResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
-    String expected =
-        "DataSuccessResponse[response_type=success,responseMap="
-            + "{value=Multiracial,results=[[RI,Asian-PacificIslander,\"$1,080.09\",18956.71657,$1.02,4%,Multiracial],"
-            + "[RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino]]}]";
 
-    assertEquals(
-        response.toString().trim().replaceAll("\\s", ""), expected.trim().replaceAll("\\s", ""));
+    // Create the expected response.
+    Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("value", "Multiracial");
+    StringReader stringReader =
+        new StringReader("RI,Asian-Pacific Islander,\" $1,080.09 \",18956.71657,$1.02,4%,Multiracial \n"
+            + "RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino");
+    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), false);
+    responseMap.put("results", csvParser.parseCSV());
+    String expectedResponse = new DataSuccessResponse(responseMap).serialize();
+
+    assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
   }

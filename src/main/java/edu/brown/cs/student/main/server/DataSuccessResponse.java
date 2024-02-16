@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * A record representing a successful response.
+ *
  * @param result The type of response.
  * @param responseMap The response map.
  */
@@ -13,6 +14,7 @@ public record DataSuccessResponse(String result, Map<String, Object> responseMap
 
   /**
    * The constructor for the response.
+   *
    * @param responseMap The response map.
    */
   public DataSuccessResponse(Map<String, Object> responseMap) {
@@ -21,6 +23,7 @@ public record DataSuccessResponse(String result, Map<String, Object> responseMap
 
   /**
    * A method that serializes the response into a JSON.
+   *
    * @return The response as a JSON.
    */
   public String serialize() {
