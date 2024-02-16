@@ -12,8 +12,7 @@ public class MockedCensusSource implements CensusSourceInterface {
 
   private List<CensusResult> data;
 
-  public MockedCensusSource(List<CensusResult> data)
-  {
+  public MockedCensusSource(List<CensusResult> data) {
     this.data = data;
   }
 

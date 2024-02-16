@@ -7,6 +7,5 @@ import java.util.List;
 public interface CensusSourceInterface {
 
   public List<CensusResult> getBroadband(Location location)
-      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException ;
-
+      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException;
 }
