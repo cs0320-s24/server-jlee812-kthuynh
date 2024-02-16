@@ -257,6 +257,37 @@ public class CSVHandlersTest {
   }
 
   @Test
+  public void testLoadTwice() throws IOException {
+    HttpURLConnection clientConnection1 =
+        tryLoadRequest("loadcsv", "true", "data/stars/stardata.csv");
+    // Get an OK response (the *connection* worked, the *API* provides a success response)
+    assertEquals(200, clientConnection1.getResponseCode());
+    HttpURLConnection clientConnection =
+        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_earnings_disparity.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+    // Now we need to see whether we've got the expected Json response.
+    Moshi moshi = new Moshi.Builder().build();
+    DataSuccessResponse response =
+        moshi
+            .adapter(DataSuccessResponse.class)
+            .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+
+    System.out.println(response);
+    // ^ If that succeeds, we got the expected response. Notice that this is *NOT* an exception, but
+    // a real Json reply.
+
+    HashMap<String, Object> responseMap = new HashMap<>();
+    responseMap.put("filePath", "data/census/dol_ri_earnings_disparity.csv");
+    responseMap.put("header", "true");
+    String expectedResponse = new DataSuccessResponse(responseMap).serialize();
+
+    Assert.assertEquals(expectedResponse, response.serialize());;
+
+    clientConnection.disconnect();
+    clientConnection1.disconnect();
+  }
+
+  @Test
   public void testSearchValidCol() throws IOException, FactoryFailureException {
     HttpURLConnection clientConnection =
         tryLoadRequest("loadcsv", "true", "data/census/dol_ri_" + "earnings_disparity.csv");
@@ -285,6 +316,7 @@ public class CSVHandlersTest {
     assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
+    clientConnection2.disconnect();
   }
 
   @Test
@@ -313,6 +345,7 @@ public class CSVHandlersTest {
     assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
+    clientConnection2.disconnect();
   }
 
   /**
@@ -343,6 +376,7 @@ public class CSVHandlersTest {
     assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
+    clientConnection2.disconnect();
   }
 
   /**
@@ -377,6 +411,7 @@ public class CSVHandlersTest {
     assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
+    clientConnection2.disconnect();
   }
 
   /**
@@ -411,5 +446,74 @@ public class CSVHandlersTest {
     assertEquals(expectedResponse, response.serialize());
 
     clientConnection.disconnect();
+    clientConnection2.disconnect();
+  }
+
+  /**
+   * Tests that after loading a file, and loading a second one, search works correctly.
+   * @throws IOException
+   * @throws FactoryFailureException
+   */
+  @Test
+  public void testSearchAfterLoadingTwoFiles() throws IOException, FactoryFailureException {
+    HttpURLConnection clientConnection =
+        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_"
+            + "earnings_disparity.csv");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, clientConnection.getResponseCode());
+
+    HttpURLConnection clientConnection2 = trySearchRequest("searchcsv", "white", "1");
+    // Now we need to see whether we've got the expected Json response.
+    assertEquals(200, clientConnection2.getResponseCode());
+    Moshi moshi = new Moshi.Builder().build();
+    DataSuccessResponse response =
+        moshi
+            .adapter(DataSuccessResponse.class)
+            .fromJson(new Buffer().readFrom(clientConnection2.getInputStream()));
+
+    // Create the expected response.
+    Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("column", "1");
+    responseMap.put("value", "white");
+    StringReader stringReader =
+        new StringReader("RI,White,\" $1,058.47 \",395773.6521, $1.00 ,75%");
+    CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), false);
+    responseMap.put("results", csvParser.parseCSV());
+    String expectedResponse = new DataSuccessResponse(responseMap).serialize();
+
+    assertEquals(expectedResponse, response.serialize());
+
+    // test loading a second file and searching again works
+
+    HttpURLConnection clientConnection3 =
+        tryLoadRequest("loadcsv", "true", "data/census/ri_income_us_census_2021.csv");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, clientConnection3.getResponseCode());
+
+    HttpURLConnection clientConnection4 = trySearchRequest("searchcsv", "Charlestown",
+        "0");
+    // Now we need to see whether we've got the expected Json response.
+    assertEquals(200, clientConnection4.getResponseCode());
+    DataSuccessResponse response2 =
+        moshi
+            .adapter(DataSuccessResponse.class)
+            .fromJson(new Buffer().readFrom(clientConnection4.getInputStream()));
+
+    // Create the expected response.
+    Map<String, Object> responseMap2 = new HashMap<>();
+    responseMap2.put("column", "0");
+    responseMap2.put("value", "Charlestown");
+    StringReader stringReader2 =
+        new StringReader("Charlestown,\"86,023.00\",\"102,325.00\",\"50,086.00\"");
+    csvParser = new CSVParser<>(stringReader2, new StringListFromRow(), false);
+    responseMap2.put("results", csvParser.parseCSV());
+    String expectedResponse2 = new DataSuccessResponse(responseMap2).serialize();
+
+    assertEquals(expectedResponse2, response2.serialize());
+
+    clientConnection.disconnect();
+    clientConnection2.disconnect();
+    clientConnection3.disconnect();
+    clientConnection4.disconnect();
   }
 }
