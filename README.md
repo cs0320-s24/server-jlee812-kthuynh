@@ -34,6 +34,8 @@ CensusSource.
 - CensusResult: A record for the relevant results of a broadcast query.
 - Location: A record for the request a user sends, with state and county names.
 - EncodedLocation: A record for the encoding of a requested location.
+- CensusSourceInterface: a shared interface for the census source and mocked census source classes
+to ensure tests that don't slow down the online API
 
 ## CSV Classes
 - CSVParser: The CSVParser class is responsible for parsing through the CSV. It takes in a reader,
@@ -59,7 +61,13 @@ CensusSource.
 - N/A
 
 # Tests
-- FOR JINHO
+- CensusHandlersTest: testing suite with mocked census data. Unit tests ensuring that the census
+  handlers are behaving as expected.
+- MockedCensusSource: implements the CensusSourceInterface, and returns a generic/constant piece
+of data to not overwhelm the online census API with requests.
+- CensusSourceTest: tests that the connection to online census API works and behaves correctly
+- CSVHandlersTest: tests that connections to load, view, and search handlers all behave correctly
+- CSVTests: unit tests that ensure that our CSV parser is behaving correctly
 
 # How to
 ## Run tests:
