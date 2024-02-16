@@ -14,7 +14,7 @@ public class StringListFromRow implements CreatorFromRow<List<String>> {
         throw new FactoryFailureException("Missing column value in row : " + row, row);
       }
 
-      row.set(i, row.get(i).replaceAll("\"", ""));
+      row.set(i, row.get(i).replaceAll("\"", "").trim());
     }
 
     return row;
