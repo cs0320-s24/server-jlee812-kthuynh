@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /** The source of data for the census, making the API request from the Census API. */
-public class CensusSource implements CensusSourceInterface{
+public class CensusSource implements CensusSourceInterface {
   private static Map<String, String> stateCodes = new HashMap<>();
   private static final Map<String, Map<String, String>> countyCodes = new HashMap<>();
 

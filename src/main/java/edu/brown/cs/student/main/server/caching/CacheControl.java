@@ -21,10 +21,10 @@ public class CacheControl<K, V> {
    * @param cacheLoader The loading cache.
    * @param useCache A boolean for whether to use the cache.
    * @param maxSize The max size of the cache.
-   * @param durationMinutes The length to keep the cache.
+   * @param durationMinutes The length to keep the cache. Set to <0 to never expire.
    */
   public CacheControl(
-      CacheLoader<K, V> cacheLoader, boolean useCache, int maxSize, int durationMinutes) {
+      CacheLoader<K, V> cacheLoader, boolean useCache, int maxSize, long durationMinutes) {
     CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder();
     this.cacheLoader = cacheLoader;
     this.useCache = useCache;

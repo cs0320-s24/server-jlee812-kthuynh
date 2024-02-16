@@ -24,18 +24,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import okio.Buffer;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import spark.Spark;
 
 public class CSVHandlersTest {
 
-  /**
-   * Sets up the port
-   */
-  @BeforeAll
+  /** Sets up the port */
+  @BeforeClass
   public static void setup_before_everything() {
     Spark.port(0);
     Logger.getLogger("").setLevel(Level.WARNING); // empty name = root logger
@@ -43,9 +41,7 @@ public class CSVHandlersTest {
 
   private CSVSource creator;
 
-  /**
-   * Sets up the listeners for the server
-   */
+  /** Sets up the listeners for the server */
   @BeforeEach
   public void setup() {
     // Re-initialize state, etc. for _every_ test method run
@@ -58,9 +54,7 @@ public class CSVHandlersTest {
     Spark.awaitInitialization(); // don't continue until the server is listening
   }
 
-  /**
-   * Closes the listeners of the server
-   */
+  /** Closes the listeners of the server */
   @AfterEach
   public void teardown() {
     this.creator.setIsLoaded();
@@ -180,6 +174,7 @@ public class CSVHandlersTest {
 
   /**
    * Tests loading when there's no file
+   *
    * @throws IOException
    */
   @Test
@@ -204,6 +199,7 @@ public class CSVHandlersTest {
 
   /**
    * Tests search handling when no value/column args
+   *
    * @throws IOException
    */
   @Test
@@ -228,6 +224,7 @@ public class CSVHandlersTest {
 
   /**
    * Tests view when there's no file given
+   *
    * @throws IOException
    */
   @Test
@@ -252,6 +249,7 @@ public class CSVHandlersTest {
 
   /**
    * Tests a valid view handler connection
+   *
    * @throws IOException
    */
   @Test
@@ -280,6 +278,7 @@ public class CSVHandlersTest {
 
   /**
    * Tests valid load
+   *
    * @throws IOException
    */
   @Test
@@ -312,6 +311,7 @@ public class CSVHandlersTest {
 
   /**
    * Tests loading 2 files works
+   *
    * @throws IOException
    */
   @Test
@@ -339,7 +339,8 @@ public class CSVHandlersTest {
     responseMap.put("header", "true");
     String expectedResponse = new DataSuccessResponse(responseMap).serialize();
 
-    Assert.assertEquals(expectedResponse, response.serialize());;
+    Assert.assertEquals(expectedResponse, response.serialize());
+    ;
 
     clientConnection.disconnect();
     clientConnection1.disconnect();
@@ -347,6 +348,7 @@ public class CSVHandlersTest {
 
   /**
    * Tests search works for a valid col
+   *
    * @throws IOException
    * @throws FactoryFailureException
    */
@@ -384,6 +386,7 @@ public class CSVHandlersTest {
 
   /**
    * Tests search is valid when header is false
+   *
    * @throws IOException
    * @throws FactoryFailureException
    */
@@ -505,8 +508,9 @@ public class CSVHandlersTest {
     Map<String, Object> responseMap = new HashMap<>();
     responseMap.put("value", "Multiracial");
     StringReader stringReader =
-        new StringReader("RI,Asian-Pacific Islander,\" $1,080.09 \",18956.71657,$1.02,4%,Multiracial \n"
-            + "RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino");
+        new StringReader(
+            "RI,Asian-Pacific Islander,\" $1,080.09 \",18956.71657,$1.02,4%,Multiracial \n"
+                + "RI,Multiracial,$971.89,8883.049171,$0.92,2%,Hispanic/Latino");
     CSVParser csvParser = new CSVParser<>(stringReader, new StringListFromRow(), false);
     responseMap.put("results", csvParser.parseCSV());
     String expectedResponse = new DataSuccessResponse(responseMap).serialize();
@@ -519,14 +523,14 @@ public class CSVHandlersTest {
 
   /**
    * Tests that after loading a file, and loading a second one, search works correctly.
+   *
    * @throws IOException
    * @throws FactoryFailureException
    */
   @Test
   public void testSearchAfterLoadingTwoFiles() throws IOException, FactoryFailureException {
     HttpURLConnection clientConnection =
-        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_"
-            + "earnings_disparity.csv");
+        tryLoadRequest("loadcsv", "true", "data/census/dol_ri_" + "earnings_disparity.csv");
     // Get an OK response (the *connection* worked, the *API* provides an error response)
     assertEquals(200, clientConnection.getResponseCode());
 
@@ -558,8 +562,7 @@ public class CSVHandlersTest {
     // Get an OK response (the *connection* worked, the *API* provides an error response)
     assertEquals(200, clientConnection3.getResponseCode());
 
-    HttpURLConnection clientConnection4 = trySearchRequest("searchcsv", "Charlestown",
-        "0");
+    HttpURLConnection clientConnection4 = trySearchRequest("searchcsv", "Charlestown", "0");
     // Now we need to see whether we've got the expected Json response.
     assertEquals(200, clientConnection4.getResponseCode());
     DataSuccessResponse response2 =

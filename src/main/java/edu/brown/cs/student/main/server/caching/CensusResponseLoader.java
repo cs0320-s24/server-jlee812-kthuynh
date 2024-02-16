@@ -1,7 +1,6 @@
 package edu.brown.cs.student.main.server.caching;
 
 import com.google.common.cache.CacheLoader;
-import edu.brown.cs.student.main.server.censusHandler.CensusSource;
 import edu.brown.cs.student.main.server.censusHandler.CensusSourceInterface;
 import edu.brown.cs.student.main.server.censusHandler.Location;
 import edu.brown.cs.student.main.server.censusHandler.LocationNotFoundException;

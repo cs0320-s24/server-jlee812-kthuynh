@@ -2,7 +2,7 @@
 - Project Name: Server
 - Total Estimated Time: 20 hours
 - Team Member(s): kthuynh, Jlee812
-- I USED INFORMATION FROM THE FOLLOWING SOURCES:
+- WE USED INFORMATION FROM THE FOLLOWING SOURCES:
     - https://stackoverflow.com/questions/57388440/how-to-remove-everything-after-last-hyphen-using-regex-java
 - Repo Link: https://github.com/cs0320-s24/server-jlee812-kthuynh
 
