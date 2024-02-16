@@ -1,7 +1,6 @@
 package edu.brown.cs.student.Tests.censusTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.server.DataSuccessResponse;
@@ -171,11 +170,9 @@ public class CensusHandlersTest {
   }
 
   /**
-<<<<<<< HEAD
-   * Broadband connection doesn't crash when there's no state given.
-=======
-   * Broadband connection doesn't crash when there's no state given
->>>>>>> 9e8233dab01a1cb70cbbd287288178125403649d
+   * <<<<<<< HEAD Broadband connection doesn't crash when there's no state given. ======= Broadband
+   * connection doesn't crash when there's no state given >>>>>>>
+   * 9e8233dab01a1cb70cbbd287288178125403649d
    *
    * @throws IOException
    */
@@ -209,11 +206,9 @@ public class CensusHandlersTest {
   }
 
   /**
-<<<<<<< HEAD
-   * Broadband doesn't crash when there's a county that doesn't exist.
-=======
-   * Broadband doesn't crash when there's a 2 word arg
->>>>>>> 9e8233dab01a1cb70cbbd287288178125403649d
+   * <<<<<<< HEAD Broadband doesn't crash when there's a county that doesn't exist. =======
+   * Broadband doesn't crash when there's a 2 word arg >>>>>>>
+   * 9e8233dab01a1cb70cbbd287288178125403649d
    *
    * @throws IOException
    */
@@ -271,7 +266,7 @@ public class CensusHandlersTest {
     clientConnection.disconnect();
   }
 
-  /** Tests caching by looking at timestamps.*/
+  /** Tests caching by looking at timestamps. */
   @Test
   public void testCache() throws IOException, InterruptedException {
     HttpURLConnection clientConnection =

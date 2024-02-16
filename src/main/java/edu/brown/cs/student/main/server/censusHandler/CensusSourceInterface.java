@@ -12,11 +12,11 @@ public interface CensusSourceInterface {
    *
    * @param location The location whose broadband usage is being list for.
    * @return A list of the census results.
-   * @throws IOException               Thrown when there is trouble getting the JSON.
-   * @throws URISyntaxException        Thrown when the link was not valid.
-   * @throws InterruptedException      Thrown when the thread for connecting is interrupted.
+   * @throws IOException Thrown when there is trouble getting the JSON.
+   * @throws URISyntaxException Thrown when the link was not valid.
+   * @throws InterruptedException Thrown when the thread for connecting is interrupted.
    * @throws LocationNotFoundException Thrown when the location does not exist.
    */
-  List<CensusResult> getBroadband(Location location) throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException;
+  List<CensusResult> getBroadband(Location location)
+      throws IOException, URISyntaxException, InterruptedException, LocationNotFoundException;
 }
-
