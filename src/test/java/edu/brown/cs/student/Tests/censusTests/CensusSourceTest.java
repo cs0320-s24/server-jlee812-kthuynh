@@ -2,7 +2,6 @@ package edu.brown.cs.student.Tests.censusTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import edu.brown.cs.student.main.server.censusHandler.CensusResult;
 import edu.brown.cs.student.main.server.censusHandler.CensusSource;
 import edu.brown.cs.student.main.server.censusHandler.Location;

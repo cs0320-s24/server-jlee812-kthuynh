@@ -1,6 +1,7 @@
 package edu.brown.cs.student.Tests.censusTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.server.DataSuccessResponse;
@@ -47,6 +48,7 @@ public class CensusHandlersTest {
     MockedCensusSource mockedCensusSource = new MockedCensusSource(data);
     CacheControl<Location, Map<String, Object>> cacheControl =
         new CacheControl<>(new CensusResponseLoader(mockedCensusSource), true, 1, 1);
+
     // In fact, restart the entire Spark server for every test!
     Spark.get("broadband", new CensusHandler(cacheControl));
     Spark.awaitInitialization(); // don't continue until the server is listening
@@ -169,7 +171,11 @@ public class CensusHandlersTest {
   }
 
   /**
+<<<<<<< HEAD
    * Broadband connection doesn't crash when there's no state given.
+=======
+   * Broadband connection doesn't crash when there's no state given
+>>>>>>> 9e8233dab01a1cb70cbbd287288178125403649d
    *
    * @throws IOException
    */
@@ -203,7 +209,11 @@ public class CensusHandlersTest {
   }
 
   /**
+<<<<<<< HEAD
    * Broadband doesn't crash when there's a county that doesn't exist.
+=======
+   * Broadband doesn't crash when there's a 2 word arg
+>>>>>>> 9e8233dab01a1cb70cbbd287288178125403649d
    *
    * @throws IOException
    */
@@ -261,7 +271,7 @@ public class CensusHandlersTest {
     clientConnection.disconnect();
   }
 
-  /** Tests caching */
+  /** Tests caching by looking at timestamps.*/
   @Test
   public void testCache() throws IOException, InterruptedException {
     HttpURLConnection clientConnection =
